@@ -1,4 +1,5 @@
 import { runOptimizer } from "./utils.js";
+import generateRoutes from "./routes/index.js";
 
 import express from "express";
 import cors from "cors";
@@ -15,6 +16,8 @@ app.listen(port, async () => {
   console.log(`Test apis with http://localhost:${port}/api`);
 });
 
-setInterval(() => {
-  runOptimizer();
-}, 1000);
+generateRoutes(app)
+
+// setInterval(() => {
+//   runOptimizer();
+// }, 1000);
