@@ -15,6 +15,6 @@ app.listen(port, async () => {
   console.log(`Test apis with http://localhost:${port}/api`);
 });
 
-// setInterval(() => {
-//   runOptimizer();
-// }, 1000);
+setInterval(() => {
+  runOptimizer();
+}, 1000);
