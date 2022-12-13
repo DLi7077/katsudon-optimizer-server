@@ -2,7 +2,7 @@
   "scripts": {
     "watch": "nodemon src/app.js",
     "start": "node src/app.js",
-    "postinstall": "chmod -R +x node_modules/next/dist/bin/next-*"
+    "postinstall": "chmod -R +x src/*"
   },
   "type": "module",
   "dependencies": {
