@@ -170,15 +170,23 @@ int main(int argc, char **argv) {
   JSONParser::createBonusStatGains(jsonObject);
   JSONParser::createStatValues(jsonObject);
 
+  LOG("{\n");
   for (auto p : JSONParser::stringValues) {
-    LOG(p.first << " " << p.second);
+    LOG("\"" << p.first << "\""
+             << ": "
+             << "\"" << p.second << "\""
+             << ",");
   }
   for (auto p : JSONParser::doubleValues) {
-    LOG(p.first << " " << p.second);
+    LOG("\"" << p.first << "\""
+             << ": " << p.second << ",");
   }
-  for (auto p : JSONParser::bonusStatGains) {
-    LOG(p);
+  LOG("\"bonus_stat_gains\": [\n")
+  for (size_t i = 0; i < JSONParser::bonusStatGains.size(); i++) {
+    LOG(JSONParser::bonusStatGains[i] << (i == JSONParser::bonusStatGains.size() - 1 ? "" : ","));
   }
+  LOG("]\n");
+  LOG("}\n");
 
   return 0;
 }
