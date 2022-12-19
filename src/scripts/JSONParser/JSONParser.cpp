@@ -140,12 +140,13 @@ std::vector<std::string> parseArrayToString(const std::string &json, std::string
 
 int main(int argc, char **argv) {
   std::string jsonObject = argv[1];
-  std::vector<std::string> bonusStatArray = JSONParser::parseArrayToString(jsonObject, "bonus_stat_gain\": ");
-  for (std::string &s : bonusStatArray) {
-    std::cout << s << "-----------------\n";
-  }
-  std::vector<std::string> lines = ParserUtils::Split(std::move(jsonObject), '\n');
+  std::vector<std::string> lines = ParserUtils::Split(jsonObject, '\n');
 
+  std::vector<std::string> bonusStatArray = JSONParser::parseArrayToString(jsonObject, "bonus_stat_gain\": ");
+  // populate
+  for (std::string &s : bonusStatArray) {
+    std::cout << s << "\n";
+  }
   size_t i = 0;
   for (; i < lines.size(); i++) {
     std::string trimmedLine;
