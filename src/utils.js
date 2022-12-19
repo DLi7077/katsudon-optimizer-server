@@ -6,11 +6,9 @@ export async function runOptimizer(jsonString) {
   const run = `./src/scripts/driver.${process.env.FILE_TYPE ?? "exe"}`;
 
   const r = Math.floor(Math.random() * 300);
-  const result = await ExecuteScript(`${run}`, [jsonString, r])
-    // .then((res) => JSON.parse(res))
-    .catch(console.error);
-
-  // const result = await ExecuteScript(`${compile}; ${run}`, [jsonString]);
+  const result = await ExecuteScript(`${run}`, [jsonString, r]).catch(
+    console.error
+  );
 
   return result;
 }
