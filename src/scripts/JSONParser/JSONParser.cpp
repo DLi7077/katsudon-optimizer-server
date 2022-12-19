@@ -14,78 +14,12 @@
         "source_stat",      \
         "target_stat",      \
   }
+#define LOG(x) std::cout << x << "\n";
 
 using string_value_JSON = std::unordered_map<std::string, std::string>;
 using double_value_JSON = std::unordered_map<std::string, double>;
-using bonus_gain_JSON = std::unordered_map<std::string, Attributes::BonusStatGain>;
 
 namespace JSONParser {
-
-struct StringToInt {
-  std::string string_key_;
-  int int_value_;
-
-  StringToInt(std::string &&string, int integer)
-      : string_key_(string), int_value_(integer) {}
-  StringToInt(const std::string &string, int integer)
-      : string_key_(string), int_value_(integer) {}
-};
-
-struct StringToString {
-  std::string string_key_;
-  std::string string_value_;
-
-  StringToString(std::string &&string, std::string &&string2)
-      : string_key_(string), string_value_(string2) {}
-  StringToString(const std::string &string, const std::string &string2)
-      : string_key_(string), string_value_(string2) {}
-};
-
-std::vector<std::string> stringFields = {
-    "element",
-    "talent_stat",
-    "affected_element",
-    "source_stat",
-    "target_stat",
-};
-
-std::vector<std::string> doubleFields = {
-    "base_attack",
-    "base_hp",
-    "crit_damage",
-    "flat_attack",
-    "attack_percent",
-    "flat_hp",
-    "hp_percent",
-    "flat_def",
-    "def_percent",
-    "elemental_mastery",
-    "energy_recharge",
-    "damage_bonus_elemental",
-    "damage_bonus_all",
-    "talent_percent",
-    "enemy_level",
-    "resistance_to_damage_element",
-};
-
-string_value_JSON stringValues;
-double_value_JSON doubleValues;
-bonus_gain_JSON bonusGainValues;
-
-void addStringValue(
-    const std::string &key, const std::string &value) {
-  stringValues[key] = value;
-}
-
-void addDoubleValue(
-    const std::string &key, const std::string &value) {
-  doubleValues[key] = std::stod(value);
-}
-
-void addBonusGain(const std::string &key, const Attributes::BonusStatGain &gain) {
-  bonusGainValues[key] = gain;
-}
-
 std::vector<std::string> parseArrayToString(const std::string &json, std::string prefixKey) {
   int location = json.find(prefixKey);
   if (location == -1) {
@@ -136,17 +70,83 @@ std::vector<std::string> parseArrayToString(const std::string &json, std::string
   return result;
 }
 
+std::vector<std::string> stringFields = {
+    "element",
+    "talent_stat",
+    "affected_element",
+    "source_stat",
+    "target_stat",
+};
+
+std::vector<std::string> doubleFields = {
+    "base_attack",
+    "base_hp",
+    "crit_damage",
+    "flat_attack",
+    "attack_percent",
+    "flat_hp",
+    "hp_percent",
+    "flat_def",
+    "def_percent",
+    "elemental_mastery",
+    "energy_recharge",
+    "damage_bonus_elemental",
+    "damage_bonus_all",
+    "talent_percent",
+    "enemy_level",
+    "resistance_to_damage_element",
+};
+
+string_value_JSON stringValues;
+double_value_JSON doubleValues;
+std::vector<Attributes::BonusStatGain> bonusStatGains;
+
+void addStringValue(const std::string &key, const std::string &value) {
+  stringValues[key] = value;
+}
+
+void addDoubleValue(const std::string &key, const std::string &value) {
+  doubleValues[key] = std::stod(value);
+}
+
+void createBonusStatGains(std::string &jsonObject) {
+  std::vector<std::string> bonusStatArray = JSONParser::parseArrayToString(jsonObject, "bonus_stat_gain\": ");
+  // populate bonus stat buffs
+  for (const std::string &bonusStatString : bonusStatArray) {
+    std::vector<std::string> attributes = ParserUtils::Split(bonusStatString, ',');
+    Attributes::BonusStatGain currentBonus;
+
+    for (std::string &attribute : attributes) {
+      attribute = ParserUtils::TrimCharacters(attribute, ' ');
+      attribute = ParserUtils::TrimCharacters(attribute, '\n');
+      attribute = ParserUtils::TrimCharacters(attribute, ' ');
+      ParserUtils::KeyValue pair = ParserUtils::parseKeyValue(attribute);
+
+      if (pair.key == "source_stat") {
+        currentBonus.source_stat_ = pair.value;
+      } else if (pair.key == "target_stat") {
+        currentBonus.target_stat_ = pair.value;
+      } else if (pair.key == "source_offset") {
+        currentBonus.source_offset_ = std::stod(pair.value);
+        continue;
+      } else if (pair.key == "percent_gain") {
+        currentBonus.percent_gain_ = std::stod(pair.value);
+      } else if (pair.key == "max_gain") {
+        currentBonus.max_gain_ = std::stod(pair.value);
+      }
+    }
+
+    bonusStatGains.push_back(currentBonus);
+  }
+}
+
 }  // namespace JSONParser
 
 int main(int argc, char **argv) {
   std::string jsonObject = argv[1];
   std::vector<std::string> lines = ParserUtils::Split(jsonObject, '\n');
+  JSONParser::createBonusStatGains(jsonObject);
 
-  std::vector<std::string> bonusStatArray = JSONParser::parseArrayToString(jsonObject, "bonus_stat_gain\": ");
-  // populate
-  for (std::string &s : bonusStatArray) {
-    std::cout << s << "\n";
-  }
   size_t i = 0;
   for (; i < lines.size(); i++) {
     std::string trimmedLine;
