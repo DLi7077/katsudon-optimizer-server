@@ -4,15 +4,38 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-  cout << "running with " << argc << " arguments\n";
   if (argc != 2) {
-    cout << "Usage: " << argv[0] << " <input file>";
+    cout << "{ Usage: " << argv[0] << " json input ";
     return 0;
   }
-  const char* input_file_path = argv[1];
-  Character x(PYRO);
-  Enemy y;
-  Optimize::optimize(x, y);
+
+  // std::string jsonInput = argv[1];
+  // cout << jsonInput;
+  double x = std::stod(argv[1]);
+  Character character(PYRO);
+  character.setStat(BASE_ATK, 700);
+  character.setStat(CRIT_DAMAGE, DEFAULT_CRIT_DAMAGE + .1);
+  character.setStat(FLAT_ATK, x);
+  character.setStat(ATK_PERCENT, 46.6);
+  character.setStat(FLAT_HP, 311);
+  character.setStat(HP_PERCENT, 46.6);
+  character.setStat(FLAT_DEF, 311);
+  character.setStat(DEF_PERCENT, 46.6);
+  character.setStat(ELEMENTAL_MASTERY, 238);
+  character.setStat(ENERGY_RECHARGE, 2.0);
+  character.setStat(MELT_BONUS, .15);
+
+  character.setTalentDetails(BURST, "total_attack", 9.86);
+
+  character.setDamageBonus(PYRO, .466);
+  character.setDamageBonus(ALL, .5);
+
+  Enemy enemy;
+  enemy.setAffectedElement(PYRO);
+  enemy.setLevel(90);
+  enemy.setResistance(PYRO, -1.8);
+
+  Optimize::optimize(character, enemy);
 
   /**
    * TODO:
