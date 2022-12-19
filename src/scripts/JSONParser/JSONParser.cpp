@@ -109,7 +109,7 @@ void addDoubleValue(const std::string &key, const std::string &value) {
   doubleValues[key] = std::stod(value);
 }
 
-void createBonusStatGains(std::string &jsonObject) {
+void createBonusStatGains(const std::string &jsonObject) {
   std::vector<std::string> bonusStatArray = JSONParser::parseArrayToString(jsonObject, "bonus_stat_gain\": ");
   // populate bonus stat buffs
   for (const std::string &bonusStatString : bonusStatArray) {
@@ -140,17 +140,12 @@ void createBonusStatGains(std::string &jsonObject) {
   }
 }
 
-}  // namespace JSONParser
-
-int main(int argc, char **argv) {
-  std::string jsonObject = argv[1];
+void createStatValues(const std::string &jsonObject) {
   std::vector<std::string> lines = ParserUtils::Split(jsonObject, '\n');
-  JSONParser::createBonusStatGains(jsonObject);
 
-  size_t i = 0;
-  for (; i < lines.size(); i++) {
-    std::string trimmedLine;
-    trimmedLine = ParserUtils::TrimCharacters(lines[i], ' ');
+  for (std::string &line : lines) {
+    std::string trimmedLine = line;
+    trimmedLine = ParserUtils::TrimCharacters(trimmedLine, ' ');
     trimmedLine = ParserUtils::TrimCharacters(trimmedLine, ',');
 
     ParserUtils::KeyValue pair = ParserUtils::parseKeyValue(trimmedLine);
@@ -166,15 +161,24 @@ int main(int argc, char **argv) {
       JSONParser::addDoubleValue(key, pair.value);
     }
   }
+}
 
-  // for (auto p : JSONParser::stringValues) {
-  //   std::cout << p.first << " : " << p.second << '\n';
-  // }
-  // for (auto p : JSONParser::doubleValues) {
-  //   std::cout << p.first << " : " << p.second << '\n';
-  // }
+}  // namespace JSONParser
 
-  std::cout << " ";
+int main(int argc, char **argv) {
+  std::string jsonObject = argv[1];
+  JSONParser::createBonusStatGains(jsonObject);
+  JSONParser::createStatValues(jsonObject);
+
+  for (auto p : JSONParser::stringValues) {
+    LOG(p.first << " " << p.second);
+  }
+  for (auto p : JSONParser::doubleValues) {
+    LOG(p.first << " " << p.second);
+  }
+  for (auto p : JSONParser::bonusStatGains) {
+    LOG(p);
+  }
 
   return 0;
 }
