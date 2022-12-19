@@ -39,13 +39,6 @@ const defaultBody = {
       percent_gain: 0,
       max_gain: 0,
     },
-    // {
-    //   source_stat: "ex: total_hp",
-    //   target_stat: "ex: Flat Attack",
-    //   source_offset: 0,
-    //   percent_gain: 0,
-    //   max_gain: 0,
-    // },
   ],
 };
 

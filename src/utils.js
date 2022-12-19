@@ -7,16 +7,11 @@ export async function runOptimizer(jsonString) {
 
   const compile = "g++ -g -std=c++17 -Wall .JSONParser.cpp -o parser";
 
-  return ExecuteScript("./src/scripts/JSONParser/parser.exe", [jsonString]);
-  // return ExecuteScript(process.env.SCRIPT ?? "./src/scripts/a.out", [jsonString]);
+  const result = await ExecuteScript("./src/scripts/JSONParser/parser.exe", [
+    jsonString,
+  ]);
 
-  return new Promise((resolve, reject) => {
-    const script = process.env.SCRIPT ?? "./src/scripts/a.out";
-    const optimize = spawn(script, [jsonString]);
-    optimize.stdout.on("data", (data) => {
-      resolve(data.toString());
-    });
-  });
+  return JSON.parse(result);
 }
 
 async function ExecuteScript(scriptPath, args) {
@@ -24,7 +19,6 @@ async function ExecuteScript(scriptPath, args) {
     const script = scriptPath;
     const optimize = spawn(script, args);
     optimize.stdout.on("data", (data) => {
-      console.log(data.toString());
       resolve(data.toString());
     });
   });
