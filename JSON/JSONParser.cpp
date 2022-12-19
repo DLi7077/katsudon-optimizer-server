@@ -19,6 +19,15 @@ int main() {
 
   JSONObject obj(std::move(jsonString));
 
-  LOG(obj);
+  // string test = obj["test"];
+
+  JSONObject test(obj["test"]);
+  JSONObject test1(test[0]);
+  LOG(test1<< test1.getType());
+  JSONObject mom(test1["mom"]);
+
+  LOG(mom<< mom.getType());
+  JSONObject emptyMom(mom[0]);
+  LOG(emptyMom<< emptyMom.getType());
 
 }

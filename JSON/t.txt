@@ -1,12 +1,11 @@
 {
   "name": "ok",
-  "test": [
+  "test": 
+  [
     {
-      "name": "ok",
-      "test": {
-        "ok": "P",
-        "t": {}
-      }
+      "names": "ojk",
+      "mom": [{}, {} , {}]
     }
   ]
+  
 }
