@@ -24,6 +24,16 @@ struct BonusStatGain {
     percent_gain_ = percentGain;
     max_gain_ = maxGain;
   }
+
+  friend std::ostream& operator<<(std::ostream& out, BonusStatGain& rhs) {
+    out << "source_stat_: " << rhs.source_stat_ << "\n";
+    out << "target_stat_: " << rhs.target_stat_ << "\n";
+    out << "source_offset_: " << rhs.source_offset_ << "\n";
+    out << "percent_gain_: " << rhs.percent_gain_ << "\n";
+    out << "max_gain_: " << rhs.max_gain_ << "\n";
+
+    return out;
+  }
 };
 
 }  // namespace Attributes
