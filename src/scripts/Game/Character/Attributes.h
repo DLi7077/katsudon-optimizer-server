@@ -10,6 +10,7 @@ struct BonusStatGain {
   double percent_gain_;      // percentage gain
   double max_gain_;          // maximum gain
 
+  BonusStatGain() {}
   // constructor
   BonusStatGain(
       std::string sourceStat,
