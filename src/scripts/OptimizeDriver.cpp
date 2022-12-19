@@ -1,21 +1,42 @@
 #include "./Constants/pch.h"
+#include "./JSONParser/JSONParser.cpp"
 #include "./Utils/optimize.cpp"
 
 using namespace std;
 
 int main(int argc, char** argv) {
-  if (argc != 2) {
+  if (argc == 1) {
     cout << "{ Usage: " << argv[0] << " json input ";
     return 0;
   }
 
-  // std::string jsonInput = argv[1];
-  // cout << jsonInput;
-  double x = std::stod(argv[1]);
+  std::string jsonObject = argv[1];
+  double flatATK = std::stod(argv[2]);
+  JSONParser::createBonusStatGains(jsonObject);
+  JSONParser::createStatValues(jsonObject);
+
+  // LOG("{\n");
+  // for (auto p : JSONParser::stringValues) {
+  //   LOG("\"" << p.first << "\""
+  //            << ": "
+  //            << "\"" << p.second << "\""
+  //            << ",");
+  // }
+  // for (auto p : JSONParser::doubleValues) {
+  //   LOG("\"" << p.first << "\""
+  //            << ": " << p.second << ",");
+  // }
+  // LOG("\"bonus_stat_gains\": [\n")
+  // for (size_t i = 0; i < JSONParser::bonusStatGains.size(); i++) {
+  //   LOG(JSONParser::bonusStatGains[i] << (i == JSONParser::bonusStatGains.size() - 1 ? "" : ","));
+  // }
+  // LOG("]\n");
+  // LOG("}\n");
+
   Character character(PYRO);
   character.setStat(BASE_ATK, 700);
   character.setStat(CRIT_DAMAGE, DEFAULT_CRIT_DAMAGE + .1);
-  character.setStat(FLAT_ATK, x);
+  character.setStat(FLAT_ATK, flatATK);
   character.setStat(ATK_PERCENT, 46.6);
   character.setStat(FLAT_HP, 311);
   character.setStat(HP_PERCENT, 46.6);

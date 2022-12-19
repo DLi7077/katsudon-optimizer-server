@@ -1,17 +1,18 @@
-import { spawn } from "child_process";
+import { exec, spawn } from "child_process";
 import * as dotenv from "dotenv";
 dotenv.config();
 
 export async function runOptimizer(jsonString) {
-  console.log("working");
+  const run = `./src/scripts/driver.${process.env.FILE_TYPE ?? "exe"}`;
 
-  const compile = "g++ -g -std=c++17 -Wall .JSONParser.cpp -o parser";
+  const r = Math.floor(Math.random() * 300);
+  const result = await ExecuteScript(`${run}`, [jsonString, r])
+    // .then((res) => JSON.parse(res))
+    .catch(console.error);
 
-  const result = await ExecuteScript("./src/scripts/JSONParser/parser.exe", [
-    jsonString,
-  ]);
+  // const result = await ExecuteScript(`${compile}; ${run}`, [jsonString]);
 
-  return JSON.parse(result);
+  return result;
 }
 
 async function ExecuteScript(scriptPath, args) {
@@ -20,6 +21,17 @@ async function ExecuteScript(scriptPath, args) {
     const optimize = spawn(script, args);
     optimize.stdout.on("data", (data) => {
       resolve(data.toString());
+    });
+  });
+}
+
+async function Compile(command) {
+  return new Promise((resolve, reject) => {
+    exec(command, (err, stdout, stderr) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(stdout ?? stderr);
     });
   });
 }
