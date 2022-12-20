@@ -31,7 +31,7 @@ std::unordered_map<char, char> closer = {
 class JsonObject {
  private:
   std::unordered_map<std::string, JsonObject*> object_;
-  std::vector<JsonObject*> array;
+  std::vector<JsonObject*> array_;
   std::string text;
   TYPE object_type_;
 
@@ -75,13 +75,15 @@ class JsonObject {
    * @param jsonString the std::string array in the form of a std::string
    * @return std::vector<JsonObject>
    */
-  static std::vector<JsonObject*> scrapeArray(const std::string& jsonString);
+  // static std::vector<JsonObject> scrapeArray(const std::string& jsonString);
   static std::vector<JsonObject*> scrapeArray(std::string&& jsonString);
 
   // index overload for map
-  JsonObject* operator[](std::string&& key);
+  JsonObject& operator[](std::string&& key);
+  JsonObject& operator[](const std::string& key);
+
   // index overload for array
-  JsonObject* operator[](size_t idx);
+  JsonObject& operator[](size_t idx);
 
   // object, array, or std::string
   std::string type();
@@ -89,7 +91,12 @@ class JsonObject {
   // extract std::string value - only for type std::string.
   std::string string_value();
 
-  // TODO: log out in form of JSONStringify
+  bool operator!=(JsonObject& rhs);
+  bool operator==(JsonObject& rhs);
+  bool equalArray(JsonObject& a, JsonObject& b);
+  bool equalString(JsonObject& a, JsonObject& b);
+  bool equalObject(JsonObject& a, JsonObject& b);
+
   friend std::ostream& operator<<(std::ostream& out, JsonObject& rhs);
 };
 
