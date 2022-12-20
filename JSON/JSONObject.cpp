@@ -16,11 +16,10 @@
 using namespace std;
 
 int LOG_NEST_LEVEL = 0;
-#define TAB '_'
+#define TAB ' '
 
 // default
 JsonObject::JsonObject() {
-  LOG("default");
 }
 
 // 1 param
@@ -70,7 +69,6 @@ JsonObject::JsonObject(const string& rawJSON) {
 
   bool isObject = jsonString.size() && jsonString[0] == '{';
   bool isArray = jsonString.size() && jsonString[0] == '[';
-  bool isString = jsonString.size() && jsonString[0] == '"';
 
   if (isObject) {
     object_type_ = TYPE::OBJECT;
@@ -87,8 +85,8 @@ JsonObject::JsonObject(const string& rawJSON) {
     array = scrapeArray(jsonString);
     return;
   }
-
-  if (isString) {
+  // consider as string
+  else {
     object_type_ = TYPE::STRING;
     text = jsonString;
     return;
@@ -220,7 +218,6 @@ vector<JsonObject> JsonObject::scrapeArray(const string& jsonString) {
     }
     if (x == ',' && nested == nestLevel) {
       if (!curr.size()) continue;
-
       result.push_back(JsonObject(std::move(curr)));
       curr = "";
       continue;
