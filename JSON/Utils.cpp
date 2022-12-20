@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <string>
@@ -6,13 +7,6 @@ using namespace std;
 
 namespace JSONUtils {
 // key value pair
-struct KeyValuePair {
-  string key_;
-  string value_;
-  KeyValuePair() {}
-  KeyValuePair(string key, string value)
-      : key_(key), value_(value) {}
-};
 
 #define TRIM_LEADING_CHARACTER_DEFINITION               \
   int n = phrase.size();                                \
@@ -57,21 +51,8 @@ string TrimCharacters(const string& phrase, char character) {
   return removedTrailingAndLeading;
 }
 
-KeyValuePair scrapeKeyValuePair(string&& instance) {
-  int colonLocation = instance.find(':');
-  if (colonLocation == -1) return KeyValuePair();
-
-  string key = instance.substr(0, colonLocation);
-  key = TrimCharacters(key, '"');
-  string value = instance.substr(colonLocation + 1, instance.size() - colonLocation - 1);
-  value = TrimCharacters(value, '"');
-
-  return KeyValuePair(key, value);
-}
-
 template <typename any>
-bool includes(const std::vector<any>& list, const any& item) {
-  return std::find(list.begin(), list.end(), item) != list.end();
+bool includes(const vector<any>& list, any item) {
+  return find(list.begin(), list.end(), item) != list.end();
 }
-
 }  // namespace JSONUtils
