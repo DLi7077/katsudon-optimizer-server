@@ -17,17 +17,16 @@ int main() {
     jsonString += phrase;
   }
 
-  JSONObject obj(std::move(jsonString));
+  JSON::Object obj(std::move(jsonString));
 
   // string test = obj["test"];
 
-  JSONObject test(obj["test"]);
-  JSONObject test1(test[0]);
-  LOG(test1<< test1.getType());
-  JSONObject mom(test1["mom"]);
+  JSON::Object test(obj["test"]);
+  JSON::Object test1(test[0]);
+  LOG(test1 << test1.getType());
+  JSON::Object mom(test1["mom"]);
 
-  LOG(mom<< mom.getType());
-  JSONObject emptyMom(mom[0]);
-  LOG(emptyMom<< emptyMom.getType());
-
+  LOG(mom << mom.getType());
+  JSON::Object emptyMom(mom[0]);
+  LOG(emptyMom << emptyMom.getType());
 }
