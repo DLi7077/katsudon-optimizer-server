@@ -1,21 +1,17 @@
 #pragma once
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#define LOG(x) cout << x << "\n";
-#define LOG_LIST(x) \
-  for (auto v : x) cout << v << "\n";
-
 using namespace std;
+namespace Json {
 
 struct KeyValuePair {
-  string key_;
-  string value_;
+  std::string key_;
+  std::string value_;
   KeyValuePair() {}
-  KeyValuePair(string key, string value)
+  KeyValuePair(std::string key, std::string value)
       : key_(key), value_(value) {}
 };
 enum TYPE {
@@ -24,19 +20,19 @@ enum TYPE {
   OBJECT
 };
 
-vector<char> openNesters = {'{', '['};
-vector<char> closeNesters = {'}', ']'};
+std::vector<char> openNesters = {'{', '['};
+std::vector<char> closeNesters = {'}', ']'};
 
-unordered_map<char, char> closer = {
+std::unordered_map<char, char> closer = {
     {'{', '}'},
     {'[', ']'},
 };
 
 class JsonObject {
  private:
-  unordered_map<string, JsonObject*> object_;
-  std::vector<JsonObject> array;
-  string text;
+  std::unordered_map<std::string, JsonObject*> object_;
+  std::vector<JsonObject*> array;
+  std::string text;
   TYPE object_type_;
 
  public:
@@ -44,8 +40,8 @@ class JsonObject {
   JsonObject();
 
   // 1 param
-  JsonObject(string&& rawJSON);
-  JsonObject(const string& rawJSON);
+  JsonObject(std::string&& rawJSON);
+  JsonObject(const std::string& rawJSON);
 
   // copy constructor
   JsonObject(const JsonObject& rhs);
@@ -59,40 +55,42 @@ class JsonObject {
 
   ~JsonObject();
 
-  // scrape key value pair from a string in format : "<key>:<value>"
-  static KeyValuePair scrapeKeyValuePair(string&& instance);
+  // scrape key value pair from a std::string in format : "<key>:<value>"
+  static KeyValuePair scrapeKeyValuePair(std::string&& instance);
 
   /**
-   * @brief scrapes array of key-value pairs from a string representation of an json object_
+   * @brief scrapes array of key-value pairs from a std::string representation of an json object_
    * @format: "{<k1>:<v1>,<k2:v2>,..]"
    * @assumes: assumed correct nesting and balanced
-   * @param jsonString the json object_ in the form of a string
-   * @return vector<KeyValuePair>
+   * @param jsonString the json object_ in the form of a std::string
+   * @return std::vector<KeyValuePair>
    */
-  static vector<KeyValuePair> scrapeObject(const string& jsonString);
-  static vector<KeyValuePair> scrapeObject(string&& jsonString);
+  static std::vector<KeyValuePair> scrapeObject(const std::string& jsonString);
+  static std::vector<KeyValuePair> scrapeObject(std::string&& jsonString);
 
   /**
-   * @brief scrapes array of strings from a string representation of a string[]
+   * @brief scrapes array of strings from a std::string representation of a std::string[]
    * @format: "[<a>,<b>,<c>]"
    * @assumes: assumed correct nesting and balanced
-   * @param jsonString the string array in the form of a string
-   * @return vector<JsonObject>
+   * @param jsonString the std::string array in the form of a std::string
+   * @return std::vector<JsonObject>
    */
-  static vector<JsonObject> scrapeArray(const string& jsonString);
-  static vector<JsonObject> scrapeArray(string&& jsonString);
+  static std::vector<JsonObject*> scrapeArray(const std::string& jsonString);
+  static std::vector<JsonObject*> scrapeArray(std::string&& jsonString);
 
   // index overload for map
-  JsonObject operator[](string&& key);
+  JsonObject* operator[](std::string&& key);
   // index overload for array
-  JsonObject operator[](size_t idx);
+  JsonObject* operator[](size_t idx);
 
-  // object, array, or string
-  string type();
+  // object, array, or std::string
+  std::string type();
 
-  // extract string value - only for type string.
-  string value();
+  // extract std::string value - only for type std::string.
+  std::string string_value();
 
   // TODO: log out in form of JSONStringify
-  friend ostream& operator<<(ostream& out, JsonObject& rhs);
+  friend std::ostream& operator<<(std::ostream& out, JsonObject& rhs);
 };
+
+}  // namespace Json

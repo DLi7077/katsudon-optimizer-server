@@ -9,24 +9,24 @@
 #include <vector>
 
 #include "./Utils.cpp"
-#define LOG(x) cout << x << "\n";
-#define ERROR_LOG(x) cerr << x << "\n";
+#define LOG(x) std::cout << x << "\n";
+#define ERROR_LOG(x) std::cerr << x << "\n";
 #define LOG_LIST(x) \
-  for (auto v : x) cout << v << "\n";
+  for (auto v : x) std::cout << v << "\n";
 
-using namespace std;
+namespace Json {
 
 int LOG_NEST_LEVEL = 0;
-#define TAB ' '
+char TAB = ' ';
 
 // default
 JsonObject::JsonObject() {}
 
 // 1 param
-JsonObject::JsonObject(string&& rawJSON) {
-  stringstream reader(rawJSON);
-  string phrase;
-  string jsonString;
+JsonObject::JsonObject(std::string&& rawJSON) {
+  std::stringstream reader(rawJSON);
+  std::string phrase;
+  std::string jsonString;
   while (reader >> phrase) {
     jsonString += phrase;
   }
@@ -37,7 +37,7 @@ JsonObject::JsonObject(string&& rawJSON) {
 
   if (isObject) {
     object_type_ = TYPE::OBJECT;
-    vector<KeyValuePair> keyValuePairs = scrapeObject(jsonString);
+    std::vector<KeyValuePair> keyValuePairs = scrapeObject(jsonString);
     for (const KeyValuePair& pair : keyValuePairs) {
       // recursively generate sub-json object
       object_[pair.key_] = new JsonObject(std::move(pair.value_));
@@ -59,10 +59,10 @@ JsonObject::JsonObject(string&& rawJSON) {
 }
 
 // 1 param
-JsonObject::JsonObject(const string& rawJSON) {
+JsonObject::JsonObject(const std::string& rawJSON) {
   stringstream reader(rawJSON);
-  string phrase;
-  string jsonString;
+  std::string phrase;
+  std::string jsonString;
   while (reader >> phrase) {
     jsonString += phrase;
   }
@@ -72,7 +72,7 @@ JsonObject::JsonObject(const string& rawJSON) {
 
   if (isObject) {
     object_type_ = TYPE::OBJECT;
-    vector<KeyValuePair> keyValuePairs = scrapeObject(jsonString);
+    std::vector<KeyValuePair> keyValuePairs = scrapeObject(jsonString);
     for (const KeyValuePair& pair : keyValuePairs) {
       // recursively generate sub-json object
       object_[pair.key_] = new JsonObject(pair.value_);
@@ -85,7 +85,7 @@ JsonObject::JsonObject(const string& rawJSON) {
     array = scrapeArray(jsonString);
     return;
   }
-  // consider as string
+  // consider as std::string
   else {
     object_type_ = TYPE::STRING;
     text = jsonString;
@@ -127,28 +127,28 @@ JsonObject& JsonObject::operator=(JsonObject&& rhs) {
 
 JsonObject::~JsonObject() = default;
 
-// scrape key value pair from a string in format : "<key>:<value>"
-KeyValuePair JsonObject::scrapeKeyValuePair(string&& instance) {
+// scrape key value pair from a std::string in format : "<key>:<value>"
+KeyValuePair JsonObject::scrapeKeyValuePair(std::string&& instance) {
   int colonLocation = instance.find(':');
   if (colonLocation == -1) return KeyValuePair();
 
-  string key = instance.substr(0, colonLocation);
+  std::string key = instance.substr(0, colonLocation);
   key = JSONUtils::TrimCharacters(key, '"');
-  string value = instance.substr(colonLocation + 1, instance.size() - colonLocation - 1);
+  std::string value = instance.substr(colonLocation + 1, instance.size() - colonLocation - 1);
   return KeyValuePair(key, value);
 }
 
 /**
- * @brief scrapes array of key-value pairs from a string representation of an json object_
+ * @brief scrapes array of key-value pairs from a std::string representation of an json object_
  * @format: "{<k1>:<v1>,<k2:v2>,..]"
  * @assumes: assumed correct nesting and balanced
- * @param jsonString the json object_ in the form of a string
- * @return vector<KeyValuePair>
+ * @param jsonString the json object_ in the form of a std::string
+ * @return std::vector<KeyValuePair>
  */
 
 #define SCRAPE_OBJECT_DEFINITION                                     \
-  vector<string> parts;                                              \
-  string curr;                                                       \
+  std::vector<std::string> parts;                                    \
+  std::string curr;                                                  \
   int nested = 0;                                                    \
   int nestLevel = 1;                                                 \
   for (char x : jsonString) {                                        \
@@ -172,8 +172,8 @@ KeyValuePair JsonObject::scrapeKeyValuePair(string&& instance) {
     curr += x;                                                       \
   }                                                                  \
                                                                      \
-  vector<KeyValuePair> result;                                       \
-  for (string & pairString : parts) {                                \
+  std::vector<KeyValuePair> result;                                  \
+  for (std::string & pairString : parts) {                           \
     if (!pairString.size()) continue;                                \
                                                                      \
     KeyValuePair kvPair = scrapeKeyValuePair(std::move(pairString)); \
@@ -182,24 +182,24 @@ KeyValuePair JsonObject::scrapeKeyValuePair(string&& instance) {
                                                                      \
   return result;
 
-vector<KeyValuePair> JsonObject::scrapeObject(const string& jsonString) {
+std::vector<KeyValuePair> JsonObject::scrapeObject(const std::string& jsonString) {
   SCRAPE_OBJECT_DEFINITION;
 }
 
-vector<KeyValuePair> JsonObject::scrapeObject(string&& jsonString) {
+std::vector<KeyValuePair> JsonObject::scrapeObject(std::string&& jsonString) {
   SCRAPE_OBJECT_DEFINITION;
 }
 
 /**
- * @brief scrapes array of strings from a string representation of a string[]
+ * @brief scrapes array of strings from a std::string representation of a std::string[]
  * @format: "[<a>,<b>,<c>]"
  * @assumes: assumed correct nesting and balanced
- * @param jsonString the string array in the form of a string
- * @return vector<JsonObject>
+ * @param jsonString the std::string array in the form of a std::string
+ * @return std::vector<JsonObject>
  */
-vector<JsonObject> JsonObject::scrapeArray(const string& jsonString) {
-  std::vector<JsonObject> result;
-  string curr;
+std::vector<JsonObject*> JsonObject::scrapeArray(const std::string& jsonString) {
+  std::vector<JsonObject*> result;
+  std::string curr;
   int nested = 0;
   int nestLevel = 1;
   for (char x : jsonString) {
@@ -211,27 +211,27 @@ vector<JsonObject> JsonObject::scrapeArray(const string& jsonString) {
       if (nested > nestLevel) curr += x;
       if (--nested == nestLevel) {
         if (!curr.size()) continue;
-        result.push_back(JsonObject(std::move(curr)));
+        result.push_back(new JsonObject(std::move(curr)));
         curr = "";
       }
       continue;
     }
     if (x == ',' && nested == nestLevel) {
       if (!curr.size()) continue;
-      result.push_back(JsonObject(std::move(curr)));
+      result.push_back(new JsonObject(std::move(curr)));
       curr = "";
       continue;
     }
     curr += x;
   }
-  if (curr.size()) result.push_back(curr);
+  if (curr.size()) result.push_back(new JsonObject(std::move(curr)));
 
   return result;
 }
 
-vector<JsonObject> JsonObject::scrapeArray(string&& jsonString) {
-  std::vector<JsonObject> result;
-  string curr;
+std::vector<JsonObject*> JsonObject::scrapeArray(std::string&& jsonString) {
+  std::vector<JsonObject*> result;
+  std::string curr;
   int nested = 0;
   int nestLevel = 1;
   for (char x : jsonString) {
@@ -240,30 +240,32 @@ vector<JsonObject> JsonObject::scrapeArray(string&& jsonString) {
       continue;
     }
     if (JSONUtils::includes(closeNesters, x)) {
-      if (nested >= nestLevel) curr += x;
+      if (nested > nestLevel) curr += x;
       if (--nested == nestLevel) {
-        result.push_back(JsonObject(std::move(curr)));
+        if (!curr.size()) continue;
+        result.push_back(new JsonObject(std::move(curr)));
         curr = "";
       }
       continue;
     }
     if (x == ',' && nested == nestLevel) {
-      result.push_back(JsonObject(std::move(curr)));
+      if (!curr.size()) continue;
+      result.push_back(new JsonObject(std::move(curr)));
       curr = "";
       continue;
     }
     curr += x;
   }
-  if (curr.size()) result.push_back(curr);
+  if (curr.size()) result.push_back(new JsonObject(std::move(curr)));
 
   return result;
 }
 
-JsonObject JsonObject::operator[](string&& key) {
-  return *object_[key];
+JsonObject* JsonObject::operator[](std::string&& key) {
+  return object_[key];
 }
 
-JsonObject JsonObject::operator[](size_t idx) {
+JsonObject* JsonObject::operator[](size_t idx) {
   if (idx < 0 && idx >= array.size()) {
     ERROR_LOG(" index " << idx << " out of bounds, size of array is " << array.size());
     abort();
@@ -271,7 +273,7 @@ JsonObject JsonObject::operator[](size_t idx) {
   return array[idx];
 }
 
-string JsonObject::type() {
+std::string JsonObject::type() {
   switch (object_type_) {
     case TYPE::OBJECT:
       return "JsonObject";
@@ -284,10 +286,11 @@ string JsonObject::type() {
   }
 }
 
-// extract string value - only for type string.
-string JsonObject::value() {
+// extract std::string value - only for type std::string.
+std::string JsonObject::string_value() {
   if (object_type_ != TYPE::STRING) {
-    ERROR_LOG(*this << " is not type string");
+    ERROR_LOG("TYPE IS NOT STRING:\n"
+              << *this);
     return "";
   }
 
@@ -295,7 +298,7 @@ string JsonObject::value() {
 }
 
 // TODO: log out in form of JSONStringify
-ostream& operator<<(ostream& out, JsonObject& rhs) {
+std::ostream& operator<<(std::ostream& out, JsonObject& rhs) {
   if (rhs.object_type_ == TYPE::OBJECT) {
     if (!rhs.object_.size()) {
       out << "{}";
@@ -308,13 +311,13 @@ ostream& operator<<(ostream& out, JsonObject& rhs) {
     for (auto [x, y] : rhs.object_) {
       bool lastItem = i++ == (rhs.object_.size() - 1);
 
-      out << string(LOG_NEST_LEVEL * 2, TAB);
+      out << std::string(LOG_NEST_LEVEL * 2, TAB);
       out << x << ": " << *y
           << (lastItem ? "" : ",")
           << "\n";
     }
     LOG_NEST_LEVEL--;
-    out << string(LOG_NEST_LEVEL * 2, TAB);
+    out << std::string(LOG_NEST_LEVEL * 2, TAB);
     out << "}";
 
     return out;
@@ -323,17 +326,17 @@ ostream& operator<<(ostream& out, JsonObject& rhs) {
   if (rhs.object_type_ == TYPE::ARRAY) {
     out << "[\n";
     LOG_NEST_LEVEL++;
-    out << string(LOG_NEST_LEVEL * 2, TAB);
+    out << std::string(LOG_NEST_LEVEL * 2, TAB);
     for (size_t i = 0; i < rhs.array.size(); i++) {
       bool lastItem = i == (rhs.array.size() - 1);
-      JsonObject obj = rhs.array[i];
-      out << obj
+      JsonObject*& obj = rhs.array[i];
+      out << *obj
           << (lastItem ? "" : ",")
           << "\n"
-          << (lastItem ? "" : string(LOG_NEST_LEVEL * 2, TAB));
+          << (lastItem ? "" : std::string(LOG_NEST_LEVEL * 2, TAB));
     }
     LOG_NEST_LEVEL--;
-    out << string(LOG_NEST_LEVEL * 2, TAB);
+    out << std::string(LOG_NEST_LEVEL * 2, TAB);
     out << "]";
 
     return out;
@@ -346,3 +349,5 @@ ostream& operator<<(ostream& out, JsonObject& rhs) {
 
   return out;
 }
+
+}  // namespace Json
