@@ -16,8 +16,9 @@ struct KeyValuePair {
 };
 enum TYPE {
   ARRAY,
+  DOUBLE,
   STRING,
-  OBJECT
+  OBJECT,
 };
 
 std::vector<char> openNesters = {'{', '['};
@@ -32,7 +33,8 @@ class JsonObject {
  private:
   std::unordered_map<std::string, JsonObject*> object_;
   std::vector<JsonObject*> array_;
-  std::string text;
+  std::string text_;
+  double double_;
   TYPE object_type_;
 
  public:
@@ -91,9 +93,13 @@ class JsonObject {
   // extract std::string value - only for type std::string.
   std::string string_value();
 
+  // extract double value - only for type std::string.
+  double double_value();
+
   bool operator!=(JsonObject& rhs);
   bool operator==(JsonObject& rhs);
   bool equalArray(JsonObject& a, JsonObject& b);
+  bool equalDouble(JsonObject& a, JsonObject& b);
   bool equalString(JsonObject& a, JsonObject& b);
   bool equalObject(JsonObject& a, JsonObject& b);
 

@@ -3,6 +3,7 @@
 #include "JSONObject.h"
 
 #include <iostream>
+#include <numeric>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -10,20 +11,19 @@
 
 #include "./Utils.cpp"
 #define LOG(x) std::cout << x;
-#define LINE_LOG(x) std::cout << x;
-#define ERROR_LOG(x) std::cerr << x << "\n";
+#define LOG_LINE(x) std::cout << x;
+#define LOG_ERROR(x) std::cerr << x << "\n";
 #define LOG_LIST(x) \
   for (auto v : x) std::cout << v << "\n";
 
 namespace Json {
-
 int LOG_NEST_LEVEL = 0;
 char TAB = ' ';
 
 // default
 JsonObject::JsonObject() {}
 
-// 1 param
+// 1 param r-value
 JsonObject::JsonObject(std::string&& rawJSON) {
   std::stringstream reader(rawJSON);
   std::string phrase;
@@ -38,28 +38,31 @@ JsonObject::JsonObject(std::string&& rawJSON) {
 
   if (isObject) {
     object_type_ = TYPE::OBJECT;
-    std::vector<KeyValuePair> keyValuePairs = scrapeObject(jsonString);
+    std::vector<KeyValuePair> keyValuePairs = scrapeObject(std::move(jsonString));
     for (const KeyValuePair& pair : keyValuePairs) {
       // recursively generate sub-json object
       object_[pair.key_] = new JsonObject(std::move(pair.value_));
     }
     return;
   }
-
   if (isArray) {
     object_type_ = TYPE::ARRAY;
     array_ = scrapeArray(std::move(jsonString));
     return;
   }
-
   if (isString) {
     object_type_ = TYPE::STRING;
-    text = jsonString;
+    text_ = jsonString;
     return;
   }
+
+  // default to be double
+  object_type_ = TYPE::DOUBLE;
+  double_ = std::stod(jsonString);
+  return;
 }
 
-// 1 param
+// 1 param r-value
 JsonObject::JsonObject(const std::string& rawJSON) {
   stringstream reader(rawJSON);
   std::string phrase;
@@ -70,35 +73,39 @@ JsonObject::JsonObject(const std::string& rawJSON) {
 
   bool isObject = jsonString.size() && jsonString[0] == '{';
   bool isArray = jsonString.size() && jsonString[0] == '[';
+  bool isString = jsonString.size() && jsonString[0] == '"';
 
   if (isObject) {
     object_type_ = TYPE::OBJECT;
-    std::vector<KeyValuePair> keyValuePairs = scrapeObject(jsonString);
+    std::vector<KeyValuePair> keyValuePairs = scrapeObject(std::move(jsonString));
     for (const KeyValuePair& pair : keyValuePairs) {
       // recursively generate sub-json object
       object_[pair.key_] = new JsonObject(pair.value_);
     }
     return;
   }
-
   if (isArray) {
     object_type_ = TYPE::ARRAY;
     array_ = scrapeArray(std::move(jsonString));
     return;
   }
-  // consider as std::string
-  else {
+  if (isString) {
     object_type_ = TYPE::STRING;
-    text = jsonString;
+    text_ = jsonString;
     return;
   }
+
+  // default to be double
+  object_type_ = TYPE::DOUBLE;
+  double_ = std::stod(jsonString);
+  return;
 }
 
 // copy constructor
 JsonObject::JsonObject(const JsonObject& rhs) {
   object_ = rhs.object_;
   array_ = rhs.array_;
-  text = rhs.text;
+  text_ = rhs.text_;
   object_type_ = rhs.object_type_;
 }
 
@@ -106,7 +113,7 @@ JsonObject::JsonObject(const JsonObject& rhs) {
 JsonObject::JsonObject(JsonObject&& rhs) {
   object_ = std::move(rhs.object_);
   array_ = std::move(rhs.array_);
-  text = std::move(rhs.text);
+  text_ = std::move(rhs.text_);
   object_type_ = std::move(rhs.object_type_);
 }
 
@@ -120,7 +127,7 @@ JsonObject& JsonObject::operator=(const JsonObject& rhs) {
 JsonObject& JsonObject::operator=(JsonObject&& rhs) {
   std::swap(object_, rhs.object_);
   std::swap(array_, rhs.array_);
-  std::swap(text, rhs.text);
+  std::swap(text_, rhs.text_);
   std::swap(object_type_, rhs.object_type_);
 
   return *this;
@@ -146,49 +153,41 @@ KeyValuePair JsonObject::scrapeKeyValuePair(std::string&& instance) {
  * @param jsonString the json object_ in the form of a std::string
  * @return std::vector<KeyValuePair>
  */
-
-#define SCRAPE_OBJECT_DEFINITION                                     \
-  std::vector<std::string> parts;                                    \
-  std::string curr;                                                  \
-  int nested = 0;                                                    \
-  int nestLevel = 1;                                                 \
-  for (char x : jsonString) {                                        \
-    if (JSONUtils::includes<char>(openNesters, x)) {                 \
-      if (++nested > nestLevel) curr += x;                           \
-      continue;                                                      \
-    }                                                                \
-    if (JSONUtils::includes(closeNesters, x)) {                      \
-      if (nested > nestLevel) curr += x;                             \
-      if (nested-- == nestLevel) {                                   \
-        parts.push_back(curr);                                       \
-        curr = "";                                                   \
-      }                                                              \
-      continue;                                                      \
-    }                                                                \
-    if (x == ',' && nested == nestLevel) {                           \
-      parts.push_back(curr);                                         \
-      curr = "";                                                     \
-      continue;                                                      \
-    }                                                                \
-    curr += x;                                                       \
-  }                                                                  \
-                                                                     \
-  std::vector<KeyValuePair> result;                                  \
-  for (std::string & pairString : parts) {                           \
-    if (!pairString.size()) continue;                                \
-                                                                     \
-    KeyValuePair kvPair = scrapeKeyValuePair(std::move(pairString)); \
-    result.push_back(kvPair);                                        \
-  }                                                                  \
-                                                                     \
-  return result;
-
-std::vector<KeyValuePair> JsonObject::scrapeObject(const std::string& jsonString) {
-  SCRAPE_OBJECT_DEFINITION;
-}
-
 std::vector<KeyValuePair> JsonObject::scrapeObject(std::string&& jsonString) {
-  SCRAPE_OBJECT_DEFINITION;
+  std::vector<std::string> parts;
+  std::string curr;
+  int nested = 0;
+  int nestLevel = 1;
+  for (char x : jsonString) {
+    if (JSONUtils::includes<char>(openNesters, x)) {
+      if (++nested > nestLevel) curr += x;
+      continue;
+    }
+    if (JSONUtils::includes(closeNesters, x)) {
+      if (nested > nestLevel) curr += x;
+      if (nested-- == nestLevel) {
+        parts.push_back(curr);
+        curr = "";
+      }
+      continue;
+    }
+    if (x == ',' && nested == nestLevel) {
+      parts.push_back(curr);
+      curr = "";
+      continue;
+    }
+    curr += x;
+  }
+
+  std::vector<KeyValuePair> result;
+  for (std::string& pairString : parts) {
+    if (!pairString.size()) continue;
+
+    KeyValuePair kvPair = scrapeKeyValuePair(std::move(pairString));
+    result.push_back(kvPair);
+  }
+
+  return result;
 }
 
 /**
@@ -198,38 +197,6 @@ std::vector<KeyValuePair> JsonObject::scrapeObject(std::string&& jsonString) {
  * @param jsonString the std::string array_ in the form of a std::string
  * @return std::vector<JsonObject>
  */
-// std::vector<JsonObject> JsonObject::scrapeArray(const std::string& jsonString) {
-//   std::vector<JsonObject> result;
-//   std::string curr;
-//   int nested = 0;
-//   int nestLevel = 1;
-//   for (char x : jsonString) {
-//     if (JSONUtils::includes(openNesters, x)) {
-//       if (++nested > nestLevel) curr += x;
-//       continue;
-//     }
-//     if (JSONUtils::includes(closeNesters, x)) {
-//       if (nested > nestLevel) curr += x;
-//       if (--nested == nestLevel) {
-//         if (!curr.size()) continue;
-//         result.push_back(JsonObject(std::move(curr)));
-//         curr = "";
-//       }
-//       continue;
-//     }
-//     if (x == ',' && nested == nestLevel) {
-//       if (!curr.size()) continue;
-//       result.push_back(JsonObject(std::move(curr)));
-//       curr = "";
-//       continue;
-//     }
-//     curr += x;
-//   }
-//   if (curr.size()) result.push_back(JsonObject(std::move(curr)));
-
-//   return result;
-// }
-
 std::vector<JsonObject*> JsonObject::scrapeArray(std::string&& jsonString) {
   std::vector<JsonObject*> result;
   std::string curr;
@@ -264,8 +231,8 @@ std::vector<JsonObject*> JsonObject::scrapeArray(std::string&& jsonString) {
 
 JsonObject& JsonObject::operator[](std::string&& key) {
   if (object_.find(key) == object_.end()) {
-    ERROR_LOG(key << " is not a valid key");
-    ERROR_LOG("valid keys:");
+    LOG_ERROR(key << " is not a valid key");
+    LOG_ERROR("valid keys:");
     for (auto [key, _] : object_) {
       LOG(key << ",");
     }
@@ -277,8 +244,8 @@ JsonObject& JsonObject::operator[](std::string&& key) {
 
 JsonObject& JsonObject::operator[](const std::string& key) {
   if (object_.find(key) == object_.end()) {
-    ERROR_LOG(key << " is not a valid key");
-    ERROR_LOG("valid keys:");
+    LOG_ERROR(key << " is not a valid key");
+    LOG_ERROR("valid keys:");
     for (auto [key, _] : object_) {
       LOG(key << ",");
     }
@@ -290,7 +257,7 @@ JsonObject& JsonObject::operator[](const std::string& key) {
 
 JsonObject& JsonObject::operator[](size_t idx) {
   if (idx < 0 && idx >= array_.size()) {
-    ERROR_LOG(" index " << idx << " out of bounds, size of array_ is " << array_.size());
+    LOG_ERROR(" index " << idx << " out of bounds, size of array_ is " << array_.size());
     abort();
   }
   return *array_[idx];
@@ -312,13 +279,25 @@ std::string JsonObject::type() {
 // extract std::string value - only for type std::string.
 std::string JsonObject::string_value() {
   if (object_type_ != TYPE::STRING) {
-    ERROR_LOG("TYPE IS NOT STRING:\n"
+    LOG_ERROR("TYPE IS NOT STRING:\n"
               << *this);
-    return "";
+    abort();
   }
 
-  return text;
+  return text_;
 }
+
+double JsonObject::double_value() {
+  if (object_type_ != TYPE::DOUBLE) {
+    LOG_ERROR("TYPE IS NOT DOUBLE:\n"
+              << *this);
+    abort();
+  }
+
+  return double_;
+}
+
+// overloads
 
 bool JsonObject::operator==(JsonObject& rhs) {
   if (object_type_ == TYPE::OBJECT && rhs.object_type_ == TYPE::OBJECT) {
@@ -367,7 +346,11 @@ bool JsonObject::equalArray(JsonObject& a, JsonObject& b) {
 }
 
 bool JsonObject::equalString(JsonObject& a, JsonObject& b) {
-  return a.text == b.text;
+  return a.text_ == b.text_;
+}
+
+bool JsonObject::equalDouble(JsonObject& a, JsonObject& b) {
+  return a.double_ == b.double_;
 }
 
 // TODO: log out in form of JSONStringify
@@ -416,7 +399,12 @@ std::ostream& operator<<(std::ostream& out, JsonObject& rhs) {
   }
 
   if (rhs.object_type_ == TYPE::STRING) {
-    cout << rhs.text;
+    cout << rhs.text_;
+    return out;
+  }
+
+  if (rhs.object_type_ == TYPE::DOUBLE) {
+    cout << rhs.double_;
     return out;
   }
 
