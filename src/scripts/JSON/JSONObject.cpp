@@ -10,6 +10,7 @@
 
 #include "./Utils.cpp"
 #define LOG(x) cout << x << "\n";
+#define ERROR_LOG(x) cerr << x << "\n";
 #define LOG_LIST(x) \
   for (auto v : x) cout << v << "\n";
 
@@ -19,8 +20,7 @@ int LOG_NEST_LEVEL = 0;
 #define TAB ' '
 
 // default
-JsonObject::JsonObject() {
-}
+JsonObject::JsonObject() {}
 
 // 1 param
 JsonObject::JsonObject(string&& rawJSON) {
@@ -259,30 +259,40 @@ vector<JsonObject> JsonObject::scrapeArray(string&& jsonString) {
   return result;
 }
 
-// JsonObject JsonObject::operator[](string&& key) {
-//   return *object_[key];
-// }
+JsonObject JsonObject::operator[](string&& key) {
+  return *object_[key];
+}
 
-// JsonObject JsonObject::operator[](size_t idx) {
-//   if (idx < 0 && idx >= array.size()) {
-//     cerr << " index " << idx << " out of bounds, size of array is " << array.size() << "\n";
-//     abort();
-//   }
-//   return array[idx];
-// }
+JsonObject JsonObject::operator[](size_t idx) {
+  if (idx < 0 && idx >= array.size()) {
+    ERROR_LOG(" index " << idx << " out of bounds, size of array is " << array.size());
+    abort();
+  }
+  return array[idx];
+}
 
-// string JsonObject::getType() {
-//   switch (object_type_) {
-//     case TYPE::OBJECT:
-//       return "JsonObject";
-//     case TYPE::ARRAY:
-//       return "Array";
-//     case TYPE::STRING:
-//       return "String";
-//     default:
-//       return "Undefined";
-//   }
-// }
+string JsonObject::type() {
+  switch (object_type_) {
+    case TYPE::OBJECT:
+      return "JsonObject";
+    case TYPE::ARRAY:
+      return "Array";
+    case TYPE::STRING:
+      return "String";
+    default:
+      return "Undefined";
+  }
+}
+
+// extract string value - only for type string.
+string JsonObject::value() {
+  if (object_type_ != TYPE::STRING) {
+    ERROR_LOG(*this << " is not type string");
+    return "";
+  }
+
+  return text;
+}
 
 // TODO: log out in form of JSONStringify
 ostream& operator<<(ostream& out, JsonObject& rhs) {
