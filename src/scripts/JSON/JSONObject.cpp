@@ -28,8 +28,8 @@ JsonObject::JsonObject(std::string&& rawJSON) {
   std::stringstream reader(rawJSON);
   std::string phrase;
   std::string jsonString;
-  while (reader >> phrase) {
-    jsonString += phrase;
+  while (getline(reader, phrase)) {
+    jsonString += JSONUtils::TrimCharacters(phrase, ' ');
   }
 
   bool isObject = jsonString.size() && jsonString[0] == '{';
@@ -64,8 +64,8 @@ JsonObject::JsonObject(const std::string& rawJSON) {
   stringstream reader(rawJSON);
   std::string phrase;
   std::string jsonString;
-  while (reader >> phrase) {
-    jsonString += phrase;
+  while (getline(reader, phrase)) {
+    jsonString += JSONUtils::TrimCharacters(phrase, ' ');
   }
 
   bool isObject = jsonString.size() && jsonString[0] == '{';
@@ -327,6 +327,11 @@ bool JsonObject::operator==(JsonObject& rhs) {
   if (object_type_ == TYPE::ARRAY && rhs.object_type_ == TYPE::ARRAY) {
     return equalArray(*this, rhs);
   }
+  if (object_type_ == TYPE::STRING && rhs.object_type_ == TYPE::STRING) {
+    return equalArray(*this, rhs);
+  }
+
+  return false;
 }
 
 bool JsonObject::operator!=(JsonObject& rhs) {
@@ -362,6 +367,7 @@ bool JsonObject::equalArray(JsonObject& a, JsonObject& b) {
 }
 
 bool JsonObject::equalString(JsonObject& a, JsonObject& b) {
+  return a.text == b.text;
 }
 
 // TODO: log out in form of JSONStringify
@@ -379,7 +385,7 @@ std::ostream& operator<<(std::ostream& out, JsonObject& rhs) {
       bool lastItem = i++ == (rhs.object_.size() - 1);
 
       out << std::string(LOG_NEST_LEVEL * 2, TAB);
-      out << key << ": " << *nestedObj
+      out << JSONUtils::wrap(key, "\"") << ": " << *nestedObj
           << (lastItem ? "" : ",")
           << "\n";
     }
