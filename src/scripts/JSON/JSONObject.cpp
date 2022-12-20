@@ -28,8 +28,8 @@ JsonObject::JsonObject(std::string&& rawJSON) {
   std::stringstream reader(rawJSON);
   std::string phrase;
   std::string jsonString;
-  while (reader >> phrase) {
-    jsonString += phrase;
+  while (getline(reader, phrase)) {
+    jsonString += JSONUtils::TrimCharacters(phrase, ' ');
   }
 
   bool isObject = jsonString.size() && jsonString[0] == '{';
@@ -64,8 +64,8 @@ JsonObject::JsonObject(const std::string& rawJSON) {
   stringstream reader(rawJSON);
   std::string phrase;
   std::string jsonString;
-  while (reader >> phrase) {
-    jsonString += phrase;
+  while (getline(reader, phrase)) {
+    jsonString += JSONUtils::TrimCharacters(phrase, ' ');
   }
 
   bool isObject = jsonString.size() && jsonString[0] == '{';
