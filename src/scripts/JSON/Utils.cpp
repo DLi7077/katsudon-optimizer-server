@@ -51,6 +51,10 @@ string TrimCharacters(const string& phrase, char character) {
   return removedTrailingAndLeading;
 }
 
+string wrap(string phrase, string wrapper) {
+  return wrapper + phrase + wrapper;
+}
+
 template <typename any>
 bool includes(const vector<any>& list, any item) {
   return find(list.begin(), list.end(), item) != list.end();
