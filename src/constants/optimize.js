@@ -1,4 +1,4 @@
-const defaultBody = {
+export const DEFAULT_CHARACTER_STATS = {
   element: "Pyro",
   base_attack: 0.34,
   base_hp: 0,
@@ -19,12 +19,6 @@ const defaultBody = {
 
   talent_stat: "total_attack",
   talent_percent: 0,
-
-  enemy_level: 0,
-  affected_element: "ex: Cryo",
-  resistance_to_damage_element: 0,
-  defense_percent_drop: 0,
-
   bonus_stat_gain: [
     {
       source_stat: "ex: total_hp",
@@ -43,4 +37,9 @@ const defaultBody = {
   ],
 };
 
-export default defaultBody;
+export const DEFAULT_ENEMY_STATS = {
+  enemy_level: 0,
+  affected_element: "ex: Cryo",
+  resistance_to_damage_element: 0,
+  defense_percent_drop: 0,
+};
