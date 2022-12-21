@@ -5,6 +5,7 @@
 namespace Parser {
 Character CreateCharacter(Json::JsonObject& characterJson) {
   std::string characterElement = characterJson["element"].string_value();
+  double level = characterJson["level"].double_value();
   // base stats
   double base_attack = characterJson["base_attack"].double_value();
   double base_hp = characterJson["base_hp"].double_value();
@@ -32,6 +33,8 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   double melt_bonus = characterJson["melt_bonus"].double_value();
 
   Character character(characterElement);
+  character.setLevel(level);
+
   character.setStat(BASE_ATK, base_attack);
   character.setStat(BASE_HP, base_hp);
   character.setStat(BASE_DEFENSE, base_def);
@@ -63,7 +66,7 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
 Enemy CreateEnemy(Json::JsonObject& enemyJson) {
   std::string affected_element = enemyJson["affected_element"].string_value();
   std::string incoming_damage_element = enemyJson["incoming_damage_element"].string_value();
-  double enemy_level = enemyJson["enemy_level"].double_value();
+  double enemy_level = enemyJson["level"].double_value();
   double resistance_to_damage_element = enemyJson["resistance_to_damage_element"].double_value();
 
   Enemy enemy;
