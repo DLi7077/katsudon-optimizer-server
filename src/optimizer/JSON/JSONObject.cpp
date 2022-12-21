@@ -101,13 +101,24 @@ JsonObject::JsonObject(const std::string& rawJSON) {
   return;
 }
 
+// 1 param double constructor
+JsonObject::JsonObject(double decimal) {
+  object_type_ = TYPE::DOUBLE;
+  double_ = decimal;
+}
+
 // copy constructor
 JsonObject::JsonObject(const JsonObject& rhs) {
-  object_ = rhs.object_;
   double_ = rhs.double_;
   array_ = rhs.array_;
   text_ = rhs.text_;
   object_type_ = rhs.object_type_;
+
+  std::unordered_map<std::string, JsonObject*> copyObject;
+  for (auto [key, obj] : rhs.object_) {
+    copyObject[key] = new JsonObject(*obj);
+  }
+  object_ = copyObject;
 }
 
 // move constructor
@@ -233,34 +244,22 @@ std::vector<JsonObject*> JsonObject::scrapeArray(std::string&& jsonString) {
 }
 
 JsonObject& JsonObject::operator[](std::string&& key) {
-  if (object_.find(key) == object_.end()) {
-    LOG_ERROR(key << " is not a valid key");
-    LOG_ERROR("valid keys:");
-    for (auto [key, _] : object_) {
-      LOG(key << ",");
-    }
-    LOG("abortting")
-    abort();
-  }
+  bool keyExists = object_.find(key) != object_.end();
+  if (!keyExists) object_[key] = new JsonObject();
+
   return *object_[key];
 }
 
 JsonObject& JsonObject::operator[](const std::string& key) {
-  if (object_.find(key) == object_.end()) {
-    LOG_ERROR(key << " is not a valid key");
-    LOG_ERROR("valid keys:");
-    for (auto [key, _] : object_) {
-      LOG(key << ",");
-    }
-    LOG("abortting")
-    abort();
-  }
+  bool keyExists = object_.find(key) != object_.end();
+  if (!keyExists) object_[key] = new JsonObject();
+
   return *object_[key];
 }
 
 JsonObject& JsonObject::operator[](size_t idx) {
   if (idx < 0 && idx >= array_.size()) {
-    LOG_ERROR(" index " << idx << " out of bounds, size of array_ is " << array_.size());
+    LOG_LINE("index " << idx << " out of bounds, size of array_ is " << array_.size());
     abort();
   }
   return *array_[idx];
@@ -275,15 +274,15 @@ std::string JsonObject::type() {
     case TYPE::STRING:
       return "String";
     default:
-      return "Undefined";
+      return "null";
   }
 }
 
 // extract std::string value - only for type std::string.
 std::string JsonObject::string_value() {
   if (object_type_ != TYPE::STRING) {
-    LOG_ERROR("TYPE IS NOT STRING:\n"
-              << *this);
+    LOG_LINE("TYPE IS NOT STRING:\n"
+             << *this);
     abort();
   }
 
@@ -292,8 +291,8 @@ std::string JsonObject::string_value() {
 
 double JsonObject::double_value() {
   if (object_type_ != TYPE::DOUBLE) {
-    LOG_ERROR("TYPE IS NOT DOUBLE:\n"
-              << *this);
+    LOG_LINE("TYPE IS NOT DOUBLE:\n"
+             << *this);
     abort();
   }
 
@@ -378,11 +377,9 @@ std::ostream& operator<<(std::ostream& out, JsonObject& rhs) {
     LOG_NEST_LEVEL--;
     out << std::string(LOG_NEST_LEVEL * 2, TAB);
     out << "}";
-
-    return out;
   }
 
-  if (rhs.object_type_ == TYPE::ARRAY) {
+  else if (rhs.object_type_ == TYPE::ARRAY) {
     out << "[\n";
     LOG_NEST_LEVEL++;
     out << std::string(LOG_NEST_LEVEL * 2, TAB);
@@ -397,18 +394,18 @@ std::ostream& operator<<(std::ostream& out, JsonObject& rhs) {
     LOG_NEST_LEVEL--;
     out << std::string(LOG_NEST_LEVEL * 2, TAB);
     out << "]";
-
-    return out;
   }
 
-  if (rhs.object_type_ == TYPE::STRING) {
-    out << rhs.text_;
-    return out;
+  else if (rhs.object_type_ == TYPE::STRING) {
+    out << JSONUtils::wrap(rhs.text_, "\"");
   }
 
-  if (rhs.object_type_ == TYPE::DOUBLE) {
+  else if (rhs.object_type_ == TYPE::DOUBLE) {
     out << rhs.double_;
-    return out;
+  }
+
+  else {
+    out << "null";
   }
 
   return out;
