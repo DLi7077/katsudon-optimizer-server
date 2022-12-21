@@ -44,6 +44,7 @@ class JsonObject {
   // 1 param
   JsonObject(std::string&& rawJSON);
   JsonObject(const std::string& rawJSON);
+  JsonObject(double decimal);
 
   // copy constructor
   JsonObject(const JsonObject& rhs);
@@ -79,7 +80,12 @@ class JsonObject {
   // static std::vector<JsonObject> scrapeArray(const std::string& jsonString);
   static std::vector<JsonObject*> scrapeArray(std::string&& jsonString);
 
-  // index overload for map
+  /**
+   * @brief return reference to object in map
+   * creates and returns a new object if invalid key
+   * @param key the string key to look up
+   * @return JsonObject& reference to the mapped object
+   */
   JsonObject& operator[](std::string&& key);
   JsonObject& operator[](const std::string& key);
 

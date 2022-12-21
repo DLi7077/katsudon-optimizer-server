@@ -362,4 +362,8 @@ class Character {
 
     return out;
   }
+
+  Json::JsonObject toJSON() {
+    
+  }
 };
