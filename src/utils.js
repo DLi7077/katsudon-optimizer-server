@@ -4,12 +4,9 @@ dotenv.config();
 
 export async function runOptimizer(jsonString) {
   const run = `./src/scripts/driver.${process.env.FILE_TYPE ?? "out"}`;
-
-  const r = Math.floor(Math.random() * 300);
-
-  const result = await ExecuteScript(`${run}`, [jsonString])
-    
-    .catch(console.error);
+  const result = await ExecuteScript(`${run}`, [jsonString]).catch(
+    console.error
+  );
 
   return result;
 }

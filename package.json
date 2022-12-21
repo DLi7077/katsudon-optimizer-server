@@ -1,7 +1,7 @@
 {
   "scripts": {
     "watch": "npm run compile-optimizer && nodemon src/app.js",
-    "compile-optimizer": "g++ -std=c++17 -o ./src/scripts/driver ./src/scripts/OptimizeDriver.cpp",
+    "compile-optimizer": "g++ -std=c++17 -o ./src/optimizer/driver ./src/optimizer/OptimizeDriver.cpp",
     "start": "node src/app.js",
     "postinstall": "chmod -R +x src/*"
   },
