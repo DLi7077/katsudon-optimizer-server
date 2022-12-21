@@ -3,12 +3,13 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 export async function runOptimizer(jsonString) {
-  const run = `./src/scripts/driver.${process.env.FILE_TYPE ?? "exe"}`;
+  const run = `./src/scripts/driver.${process.env.FILE_TYPE ?? "out"}`;
 
   const r = Math.floor(Math.random() * 300);
-  const result = await ExecuteScript(`${run}`, [jsonString, r]).catch(
-    console.error
-  );
+
+  const result = await ExecuteScript(`${run}`, [jsonString])
+    
+    .catch(console.error);
 
   return result;
 }
@@ -27,8 +28,10 @@ async function Compile(command) {
   return new Promise((resolve, reject) => {
     exec(command, (err, stdout, stderr) => {
       if (err) {
+        console.log("problem");
         reject(err);
       }
+      console.log("ok");
       resolve(stdout ?? stderr);
     });
   });
