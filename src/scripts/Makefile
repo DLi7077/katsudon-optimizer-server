@@ -20,7 +20,7 @@ EXEC_DIR=.
 	g++ $(C++FLAG) $(INCLUDES)  -c $< -o $@
 
 # Includes.
-INCLUDES=  -I.
+INCLUDES=  -I. 
 LIBS_ALL = -L/usr/lib -L/usr/local/lib $(MATH_LIBS)
 
 # ZEROTH PROGRAM
@@ -30,8 +30,10 @@ $(PROGRAM_0): $(ALL_OBJ0)
 	g++ $(C++FLAG) -o $(EXEC_DIR)/$@ $(ALL_OBJ0) $(INCLUDES) $(LIBS_ALL)
 
 # Compile and run optimize
-run_optimize :
+optimize :
 	make $(PROGRAM_0)
+
+run_optimize:
 	./$(PROGRAM_0)
 
 all:
