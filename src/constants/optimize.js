@@ -1,8 +1,9 @@
 const defaultBody = {
-  element: "ex: Pyro",
-  base_attack: 0,
+  element: "Pyro",
+  base_attack: 0.34,
   base_hp: 0,
-  flat_attack: 0,
+  base_def: 0,
+  flat_attack: 100000,
   attack_percent: 0,
   flat_hp: 0,
   hp_percent: 0,
@@ -16,7 +17,7 @@ const defaultBody = {
   damage_bonus_all: 0,
   melt_bonus: 0,
 
-  talent_stat: "ex: total_attack",
+  talent_stat: "total_attack",
   talent_percent: 0,
 
   enemy_level: 0,
