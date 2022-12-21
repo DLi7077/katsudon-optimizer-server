@@ -11,8 +11,8 @@
 
 #include "./Utils.cpp"
 #define LOG(x) std::cout << x;
-#define LOG_LINE(x) std::cout << x;
-#define LOG_ERROR(x) std::cerr << x << "\n";
+#define LOG_LINE(x) std::cout << x << "\n";
+#define LOG_ERROR(x) std::cout << x << "\n";
 #define LOG_LIST(x) \
   for (auto v : x) std::cout << v << "\n";
 
@@ -52,7 +52,7 @@ JsonObject::JsonObject(std::string&& rawJSON) {
   }
   if (isString) {
     object_type_ = TYPE::STRING;
-    text_ = jsonString;
+    text_ = JSONUtils::TrimCharacters(jsonString, '"');
     return;
   }
 
@@ -91,7 +91,7 @@ JsonObject::JsonObject(const std::string& rawJSON) {
   }
   if (isString) {
     object_type_ = TYPE::STRING;
-    text_ = jsonString;
+    text_ = JSONUtils::TrimCharacters(jsonString, '"');
     return;
   }
 

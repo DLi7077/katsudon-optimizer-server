@@ -60,7 +60,7 @@ class Artifact {
 
   Stat& operator[](size_t location) {
     if (location < 0 || location > SUBSTAT_COUNT) {
-      std::cerr << "index " << location << " Out of Bounds";
+      std::cout << "index " << location << " Out of Bounds";
       abort();
     }
 

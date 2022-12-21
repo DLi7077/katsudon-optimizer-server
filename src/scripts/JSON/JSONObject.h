@@ -67,7 +67,6 @@ class JsonObject {
    * @param jsonString the json object_ in the form of a std::string
    * @return std::vector<KeyValuePair>
    */
-  static std::vector<KeyValuePair> scrapeObject(const std::string& jsonString);
   static std::vector<KeyValuePair> scrapeObject(std::string&& jsonString);
 
   /**
