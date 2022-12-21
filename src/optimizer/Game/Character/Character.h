@@ -265,6 +265,10 @@ class Character {
     return bonus_stat_gains_;
   }
 
+  int setLevel(int level) {
+    return character_level_ = level;
+  }
+
   // modify base stats
   void setStat(std::string label, double value) {
     stats_[label] = value;

@@ -104,6 +104,7 @@ JsonObject::JsonObject(const std::string& rawJSON) {
 // copy constructor
 JsonObject::JsonObject(const JsonObject& rhs) {
   object_ = rhs.object_;
+  double_ = rhs.double_;
   array_ = rhs.array_;
   text_ = rhs.text_;
   object_type_ = rhs.object_type_;
@@ -113,6 +114,7 @@ JsonObject::JsonObject(const JsonObject& rhs) {
 JsonObject::JsonObject(JsonObject&& rhs) {
   object_ = std::move(rhs.object_);
   array_ = std::move(rhs.array_);
+  double_ = std::move(rhs.double_);
   text_ = std::move(rhs.text_);
   object_type_ = std::move(rhs.object_type_);
 }
@@ -125,8 +127,9 @@ JsonObject& JsonObject::operator=(const JsonObject& rhs) {
 }
 
 JsonObject& JsonObject::operator=(JsonObject&& rhs) {
-  std::swap(object_, rhs.object_);
   std::swap(array_, rhs.array_);
+  std::swap(double_, rhs.double_);
+  std::swap(object_, rhs.object_);
   std::swap(text_, rhs.text_);
   std::swap(object_type_, rhs.object_type_);
 
@@ -399,12 +402,12 @@ std::ostream& operator<<(std::ostream& out, JsonObject& rhs) {
   }
 
   if (rhs.object_type_ == TYPE::STRING) {
-    cout << rhs.text_;
+    out << rhs.text_;
     return out;
   }
 
   if (rhs.object_type_ == TYPE::DOUBLE) {
-    cout << rhs.double_;
+    out << rhs.double_;
     return out;
   }
 
