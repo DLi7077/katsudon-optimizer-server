@@ -1,17 +1,17 @@
 #include "../Constants/constants.h"
-#include "../Game/DamageCalculator.cpp"
 #include "../Game/Character/Character.h"
+#include "../Game/DamageCalculator.cpp"
 #include "./initializer.cpp"
 
 namespace Optimize {
 
 // https://stackoverflow.com/questions/16111337/declaring-a-priority-queue-in-c-with-a-custom-comparator
 Character optimize(Character& character, Enemy& enemy) {
-  std::cout << "Flower Artifacts:\t" << Initial::FlowerArtifacts.size() << "\n";
-  std::cout << "Feather Artifacts:\t" << Initial::FeatherArtifacts.size() << "\n";
-  std::cout << "Sands Artifacts:\t" << Initial::SandsArtifacts.size() << "\n";
-  std::cout << "Goblet Artifacts:\t" << Initial::GobletArtifacts.size() << "\n";
-  std::cout << "Circlet Artifacts:\t" << Initial::CircletArtifacts.size() << "\n\n";
+  // std::cout << "Flower Artifacts:\t" << Initial::FlowerArtifacts.size() << "\n";
+  // std::cout << "Feather Artifacts:\t" << Initial::FeatherArtifacts.size() << "\n";
+  // std::cout << "Sands Artifacts:\t" << Initial::SandsArtifacts.size() << "\n";
+  // std::cout << "Goblet Artifacts:\t" << Initial::GobletArtifacts.size() << "\n";
+  // std::cout << "Circlet Artifacts:\t" << Initial::CircletArtifacts.size() << "\n\n";
 
   std::vector<std::vector<Artifact>> artifactSets = {
       Initial::FlowerArtifacts,
@@ -40,7 +40,7 @@ Character optimize(Character& character, Enemy& enemy) {
       minHeap(DamageComparator);
 
   for (std::vector<Artifact>& artifactPool : artifactSets) {
-    for (Character character : population) {
+    for (Character& character : population) {
       for (Artifact& piece : artifactPool) {
         Character curr = character;
         curr.addArtifact(piece);
@@ -61,14 +61,14 @@ Character optimize(Character& character, Enemy& enemy) {
   }
 
   Character best = population[limit - 1];
-  cout << best;
+  std::cout << best;
 
   std::vector<Artifact> artifacts = best.getArtifacts();
 
   for (Artifact& artifact : artifacts) std::cout << artifact;
 
   std::cout.precision(8);
-  cout << "best damage " << Calculator::damageOutput(best, enemy) << "\n";
+  std::cout << "best damage " << Calculator::damageOutput(best, enemy) << "\n";
   return best;
 }
 }  // namespace Optimize

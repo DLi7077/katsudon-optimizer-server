@@ -76,7 +76,7 @@ class Enemy {
 
   double getResistance(std::string element) {
     if (!(Constants::validateElement(element))) {
-      std::cerr << "\"" << element << "\" is not a valid element type.\n";
+      std::cout << "\"" << element << "\" is not a valid element type.\n";
       abort();
     }
     return resistance_percent_[element];
@@ -91,7 +91,7 @@ class Enemy {
   }
   void setResistance(std::string element, double value) {
     if (!(Constants::validateElement(element))) {
-      std::cerr << "\"" << element << "\" is not a valid element type.\n";
+      std::cout << "\"" << element << "\" is not a valid element type.\n";
       abort();
     }
     resistance_percent_[element] = value;

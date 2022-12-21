@@ -235,7 +235,7 @@ class Character {
   // retrieve info from complete built
   double getStat(std::string label) {
     if (!validFinalStat(label)) {
-      std::cerr << label << " is not a valid stat\n";
+      std::cout << label << " is not a valid stat\n";
       abort();
     }
     return final_stats_[label];
