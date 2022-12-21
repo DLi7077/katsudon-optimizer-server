@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 export async function runOptimizer(jsonString) {
-  const run = `./src/scripts/driver.${process.env.FILE_TYPE ?? "out"}`;
+  const run = `./src/optimizer/driver.${process.env.FILE_TYPE ?? "out"}`;
   const result = await ExecuteScript(`${run}`, [jsonString]).catch(
     console.error
   );
