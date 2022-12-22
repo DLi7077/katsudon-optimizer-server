@@ -10,6 +10,7 @@ class Enemy {
   int enemy_level_;
   std::unordered_map<std::string, double> resistance_percent_;
   std::string affected_element_ = DEFAULT_AFFECTED_ELEMENT;
+  double defense_percent_dropped_;
 
  public:
   // default
@@ -86,6 +87,10 @@ class Enemy {
     return affected_element_;
   }
 
+  double getDefensePercentDropped() {
+    return defense_percent_dropped_;
+  }
+
   void setLevel(int level) {
     enemy_level_ = level;
   }
@@ -98,6 +103,10 @@ class Enemy {
   }
   void setAffectedElement(std::string element) {
     affected_element_ = element;
+  }
+
+  void setDefensePercentDropped(double dropped) {
+    defense_percent_dropped_ = dropped;
   }
 
   friend std::ostream& operator<<(std::ostream& out, Enemy& rhs) {

@@ -19,8 +19,8 @@ double baseDamage(Character& character) {
     double damageInstance = character.getStat(talentScaling.source_stat_) * talentScaling.stat_scaling_;
     baseDamage += damageInstance;
   }
-  
-  return baseDamage;
+
+  return baseDamage + character.getStat("base_damage_bonus");
 }
 
 double bonusMultipliers(Character& character) {
@@ -55,13 +55,19 @@ double meltBonus(Character& character, Enemy& enemy) {
   return multiplier;
 }
 
+// https://library.keqingmains.com/combat-mechanics/damage/damage-formula#enemy-defense
 double damageReductionByDefense(Character& character, Enemy& enemy) {
   int characterLevel = character.getLevel();
   int enemyLevel = enemy.getLevel();
 
   // TODO: add defense shred
-  double enemyDefense = 5 * enemyLevel + 500;
-  double DMGReduction = enemyDefense / double(enemyDefense + (5 * characterLevel) + 500);
+  double enemyDefense = enemyLevel + 100;
+  double defensePercentDropped = enemy.getDefensePercentDropped();
+  double defensePercentIgnored = character.getStat("defense_shred");
+
+  double reducedDefense = enemyDefense * (1 - defensePercentDropped) * (1 - defensePercentIgnored);
+
+  double DMGReduction = (characterLevel + 100) / ((characterLevel + 100) + reducedDefense);
 
   return DMGReduction;
 }
@@ -88,7 +94,7 @@ double damageOutput(Character& character, Enemy& enemy) {
 
   double baseDMG = baseDamage(finalized);
   double multipliers = bonusMultipliers(finalized);
-  double DMGReducedPercent = 1 - damageReductionByDefense(finalized, enemy);
+  double DMGReducedPercent = damageReductionByDefense(finalized, enemy);
   double resistanceMultiplier = enemyElementResistance(finalized, enemy);
   double meltVapMultiplier = meltBonus(finalized, enemy);
 

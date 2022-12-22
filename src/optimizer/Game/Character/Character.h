@@ -95,6 +95,8 @@ class Character {
         "damage_bonus_pyro",
         "damage_bonus_physical",
         "damage_bonus_all",
+        "base_damage_bonus",
+        "defense_shred",
         MELT_BONUS,
     };
     for (const std::string& stat : validStats) {
@@ -156,7 +158,6 @@ class Character {
     damage_bonus_ = rhs.damage_bonus_;
     final_stats_ = rhs.stats_;
     damage_element_ = rhs.damage_element_;
-    character_level_ = rhs.character_level_;
     artifact_set_ = rhs.artifact_set_;
     bonus_stat_gains_ = rhs.bonus_stat_gains_;
     talent_scalings_ = rhs.talent_scalings_;
@@ -180,7 +181,6 @@ class Character {
     damage_bonus_ = std::move(rhs.damage_bonus_);
     final_stats_ = std::move(rhs.stats_);
     damage_element_ = std::move(rhs.damage_element_);
-    character_level_ = std::move(rhs.character_level_);
     talent_scalings_ = std::move(rhs.talent_scalings_);
     artifact_set_ = std::move(rhs.artifact_set_);
     bonus_stat_gains_ = std::move(rhs.bonus_stat_gains_);
@@ -372,7 +372,8 @@ class Character {
     result["damage_bonus_pyro"] = Json::JsonObject(final_stats_["damage_bonus_pyro"]);
     result["damage_bonus_physical"] = Json::JsonObject(final_stats_["damage_bonus_physical"]);
     result["damage_bonus_all"] = Json::JsonObject(final_stats_["damage_bonus_all"]);
-
+    result["base_damage_bonus"] = Json::JsonObject(final_stats_["base_damage_bonus"]);
+    result["defense_shred"] = Json::JsonObject(final_stats_["defense_shred"]);
     result["artifacts"] = Json::JsonObject(Json::TYPE::ARRAY);
     for (Artifact& artifact : artifact_set_) {
       result["artifacts"].push_back(artifact.toJSON());
