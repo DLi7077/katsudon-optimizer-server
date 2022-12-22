@@ -1,11 +1,11 @@
 #pragma once
 #include "./pch.h"
 
-#define ATK_PERCENT "ATK%"
-#define HP_PERCENT "HP%"
-#define DEF_PERCENT "DEF%"
-#define ELEMENTAL_MASTERY "EM"
-#define ENERGY_RECHARGE "ER%"
+#define ATK_PERCENT "ATK %"
+#define HP_PERCENT "HP %"
+#define DEF_PERCENT "DEF %"
+#define ELEMENTAL_MASTERY "Elemental Mastery"
+#define ENERGY_RECHARGE "Energy Recharge%"
 #define CRIT_RATE "Crit Rate"
 #define CRIT_DAMAGE "Crit Damage"
 #define ANEMO_DAMAGE_BONUS "Anemo DMG Bonus%"

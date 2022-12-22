@@ -61,14 +61,14 @@ Character optimize(Character& character, Enemy& enemy) {
   }
 
   Character best = population[limit - 1];
-  std::cout << best;
+  // std::cout << best.toJSON();
 
-  std::vector<Artifact> artifacts = best.getArtifacts();
+  // std::vector<Artifact> artifacts = best.getArtifacts();
 
-  for (Artifact& artifact : artifacts) std::cout << artifact;
+  // for (Artifact& artifact : artifacts) std::cout << artifact;
 
-  std::cout.precision(8);
-  std::cout << "best damage " << Calculator::damageOutput(best, enemy) << "\n";
+  // std::cout.precision(8);
+  // std::cout << "best damage " << Calculator::damageOutput(best, enemy) << "\n";
   return best;
 }
 }  // namespace Optimize
