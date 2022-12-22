@@ -40,8 +40,9 @@ class JsonObject {
  public:
   // default
   JsonObject();
+  JsonObject(TYPE t, std::string value);
 
-  // 1 param
+  // 1 param - default for parsing
   JsonObject(std::string&& rawJSON);
   JsonObject(const std::string& rawJSON);
   JsonObject(double decimal);
@@ -91,6 +92,9 @@ class JsonObject {
 
   // index overload for array
   JsonObject& operator[](size_t idx);
+
+  JsonObject& push_back(const JsonObject& rhs);
+  JsonObject& push_back(JsonObject&& rhs);
 
   // object, array, or std::string
   std::string type();

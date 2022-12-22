@@ -23,6 +23,24 @@ char TAB = ' ';
 // default
 JsonObject::JsonObject() {}
 
+JsonObject::JsonObject(TYPE type, std::string value = "") {
+  object_type_ = type;
+  switch (type) {
+    case TYPE::DOUBLE:
+      double_ = std::stod(value);
+      break;
+    case TYPE::STRING:
+      text_ = value;
+      break;
+    case TYPE::ARRAY:
+      array_ = JsonObject::scrapeArray(std::move(value));
+      break;
+    // TODO: handle object
+    default:
+      break;
+  }
+}
+
 // 1 param r-value
 JsonObject::JsonObject(std::string&& rawJSON) {
   std::stringstream reader(rawJSON);
@@ -244,6 +262,7 @@ std::vector<JsonObject*> JsonObject::scrapeArray(std::string&& jsonString) {
 }
 
 JsonObject& JsonObject::operator[](std::string&& key) {
+  object_type_ = TYPE::OBJECT;
   bool keyExists = object_.find(key) != object_.end();
   if (!keyExists) object_[key] = new JsonObject();
 
@@ -251,6 +270,7 @@ JsonObject& JsonObject::operator[](std::string&& key) {
 }
 
 JsonObject& JsonObject::operator[](const std::string& key) {
+  object_type_ = TYPE::OBJECT;
   bool keyExists = object_.find(key) != object_.end();
   if (!keyExists) object_[key] = new JsonObject();
 
@@ -265,14 +285,32 @@ JsonObject& JsonObject::operator[](size_t idx) {
   return *array_[idx];
 }
 
+JsonObject& JsonObject::push_back(const JsonObject& rhs) {
+  object_type_ = TYPE::ARRAY;
+  JsonObject* copy = new JsonObject(rhs);
+  array_.push_back(copy);
+
+  return *this;
+}
+
+JsonObject& JsonObject::push_back(JsonObject&& rhs) {
+  object_type_ = TYPE::ARRAY;
+  JsonObject* copy = new JsonObject(std::move(rhs));
+  array_.push_back(copy);
+
+  return *this;
+}
+
 std::string JsonObject::type() {
   switch (object_type_) {
-    case TYPE::OBJECT:
-      return "JsonObject";
     case TYPE::ARRAY:
       return "Array";
+    case TYPE::DOUBLE:
+      return "Double";
     case TYPE::STRING:
       return "String";
+    case TYPE::OBJECT:
+      return "JsonObject";
     default:
       return "null";
   }

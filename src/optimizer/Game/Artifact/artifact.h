@@ -80,6 +80,17 @@ class Artifact {
     return out;
   }
 
+  Json::JsonObject toJSON() {
+    Json::JsonObject result;
+    result["main_stat"] = main_stat_.toJSON();
+    result["substats"] = Json::JsonObject(Json::TYPE::ARRAY);
+    for (Stat& substat : substats_) {
+      result["substats"].push_back(substat.toJSON());
+    }
+
+    return result;
+  }
+
  private:
   std::array<Stat, SUBSTAT_COUNT> substats_;
   Stat main_stat_;

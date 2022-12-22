@@ -73,6 +73,14 @@ class Stat {
     return out;
   }
 
+  Json::JsonObject toJSON() {
+    Json::JsonObject result;
+    result["label"] = Json::JsonObject(JSONUtils::wrap(label_, "\""));
+    result["value"] = Json::JsonObject(value_);
+
+    return result;
+  }
+
  private:
   std::string label_;
   double value_;

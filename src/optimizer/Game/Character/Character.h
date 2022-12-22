@@ -364,6 +364,31 @@ class Character {
   }
 
   Json::JsonObject toJSON() {
-    
+    Json::JsonObject result;
+    result["level"] = Json::JsonObject(character_level_);
+    result["total_attack"] = Json::JsonObject(final_stats_["total_attack"]);
+    result["total_hp"] = Json::JsonObject(final_stats_["total_hp"]);
+    result["total_defense"] = Json::JsonObject(final_stats_["total_defense"]);
+
+    result["elemental_mastery"] = Json::JsonObject(final_stats_["elemental_mastery"]);
+    result["energy_recharge"] = Json::JsonObject(final_stats_["energy_recharge"]);
+    result["crit_rate"] = Json::JsonObject(final_stats_["crit_rate"]);
+    result["crit_damage"] = Json::JsonObject(final_stats_["crit_damage"]);
+
+    result["damage_bonus_anemo"] = Json::JsonObject(final_stats_["damage_bonus_anemo"]);
+    result["damage_bonus_cryo"] = Json::JsonObject(final_stats_["damage_bonus_cryo"]);
+    result["damage_bonus_dendro"] = Json::JsonObject(final_stats_["damage_bonus_dendro"]);
+    result["damage_bonus_electro"] = Json::JsonObject(final_stats_["damage_bonus_electro"]);
+    result["damage_bonus_hydro"] = Json::JsonObject(final_stats_["damage_bonus_hydro"]);
+    result["damage_bonus_pyro"] = Json::JsonObject(final_stats_["damage_bonus_pyro"]);
+    result["damage_bonus_physical"] = Json::JsonObject(final_stats_["damage_bonus_physical"]);
+    result["damage_bonus_all"] = Json::JsonObject(final_stats_["damage_bonus_all"]);
+
+    result["artifacts"] = Json::JsonObject(Json::TYPE::ARRAY);
+    for (Artifact& artifact : artifact_set_) {
+      result["artifacts"].push_back(artifact.toJSON());
+    }
+
+    return result;
   }
 };
