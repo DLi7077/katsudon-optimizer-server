@@ -17,10 +17,10 @@ int main(int argc, char** argv) {
   Character character = Parser::CreateCharacter(characterJson);
   Enemy enemy = Parser::CreateEnemy(enemyJson);
 
-  character = Optimize::optimize(character, enemy);
+  Character best = Optimize::optimize(character, enemy);
 
-  Json::JsonObject bestJson = character.toJSON();
-  LOG(bestJson);
+  Json::JsonObject bestCharacterJson = best.toJSON();
+  LOG(bestCharacterJson);
 
   /**
    * TODO:

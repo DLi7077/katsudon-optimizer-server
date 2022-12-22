@@ -105,6 +105,8 @@ class JsonObject {
   // extract double value - only for type std::string.
   double double_value();
 
+  std::vector<JsonObject> array_value();
+
   bool operator!=(JsonObject& rhs);
   bool operator==(JsonObject& rhs);
   bool equalArray(JsonObject& a, JsonObject& b);

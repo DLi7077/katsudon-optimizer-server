@@ -35,6 +35,8 @@ class Character {
 
   std::vector<Attributes::BonusStatGain> bonus_stat_gains_;
 
+  double damage_ceiling_ = 0;
+
   void InitCharacterStats() {
     stats_[BASE_ATK] = DEFAULT_BASE_ATK;
     stats_[BASE_HP] = DEFAULT_BASE_HP;
@@ -229,6 +231,10 @@ class Character {
     return character_level_;
   }
 
+  double getDamageCeiling() {
+    return damage_ceiling_;
+  }
+
   std::string& getDamageElement() {
     return damage_element_;
   }
@@ -265,10 +271,13 @@ class Character {
     return bonus_stat_gains_;
   }
 
-  int setLevel(int level) {
-    return character_level_ = level;
+  void setLevel(int level) {
+    character_level_ = level;
   }
 
+  void setDamageCeiling(double dmg) {
+    damage_ceiling_ = dmg;
+  }
   // modify base stats
   void setStat(std::string label, double value) {
     stats_[label] = value;
@@ -388,6 +397,8 @@ class Character {
     for (Artifact& artifact : artifact_set_) {
       result["artifacts"].push_back(artifact.toJSON());
     }
+
+    result["damage_ceiling"] = Json::JsonObject(damage_ceiling_);
 
     return result;
   }

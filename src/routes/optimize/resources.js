@@ -19,9 +19,11 @@ export async function optimize(req, res) {
     character: characterStats,
     enemy: enemyStats,
   };
-  const result = await runOptimizer(JSON.stringify(variables)).then((res) =>
-    JSON.parse(res)
+  const result = await runOptimizer(JSON.stringify(variables)).then((result) =>
+    JSON.parse(result)
   );
+
+  console.log(result);
 
   res.status(200);
   res.json(result);

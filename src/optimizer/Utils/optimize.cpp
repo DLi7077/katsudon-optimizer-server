@@ -60,15 +60,10 @@ Character optimize(Character& character, Enemy& enemy) {
     }
   }
 
-  Character best = population[limit - 1];
-  // std::cout << best.toJSON();
+  Character best = population.back();
+  double damageCeiling = Calculator::damageOutput(best, enemy);
+  best.setDamageCeiling(damageCeiling);
 
-  // std::vector<Artifact> artifacts = best.getArtifacts();
-
-  // for (Artifact& artifact : artifacts) std::cout << artifact;
-
-  // std::cout.precision(8);
-  // std::cout << "best damage " << Calculator::damageOutput(best, enemy) << "\n";
   return best;
 }
 }  // namespace Optimize
