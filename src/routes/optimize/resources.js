@@ -23,6 +23,8 @@ export async function optimize(req, res) {
     JSON.parse(result)
   );
 
+  // const result = await runOptimizer(JSON.stringify(variables))
+
   console.log(result);
 
   res.status(200);

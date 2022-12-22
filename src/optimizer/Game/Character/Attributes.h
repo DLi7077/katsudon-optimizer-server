@@ -2,6 +2,16 @@
 #include "../../Constants/pch.h"
 
 namespace Attributes {
+struct TalentScaling {
+  std::string source_stat_;  // stat to scale on (total_attack)
+  double stat_scaling_;      // scaling percent (3.29x , or 329%)
+  TalentScaling() {}
+  TalentScaling(std::string&& source, double scaling)
+      : source_stat_(std::move(source)), stat_scaling_(scaling) {}
+  TalentScaling(const std::string& source, double scaling)
+      : source_stat_(source), stat_scaling_(scaling) {}
+};
+
 // support for stats like Hu Tao E and 4pc emblem of severed fate
 struct BonusStatGain {
   std::string source_stat_;  // stat that bonus is proportional to

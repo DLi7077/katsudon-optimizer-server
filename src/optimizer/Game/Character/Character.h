@@ -5,8 +5,6 @@
 #include "./Attributes.h"
 
 #define CHARACTER_LEVEL "level"
-#define SKILL "Elemental Skill"
-#define BURST "Elemental Burst"
 #define MELT_BONUS "Melt Bonus"
 
 #define DEFAULT_ELEMENT PYRO
@@ -15,9 +13,6 @@
 #define DEFAULT_BASE_HP 10000
 #define DEFAULT_BASE_DEF 200
 #define DEFAULT_CRIT_DAMAGE .5
-
-#define SKILL_SCALING_DEFAULT 3.656
-#define BURST_SCALING_DEFAULT 3.026
 
 using TalentScalingStat = std::unordered_map<std::string, std::string>;
 using TalentDMGPercent = std::unordered_map<std::string, double>;
@@ -30,9 +25,7 @@ class Character {
   std::unordered_map<std::string, double> final_stats_;
   std::vector<Artifact> artifact_set_;
   std::string damage_element_ = DEFAULT_ELEMENT;
-  TalentScalingStat scaling_stat_;
-  TalentDMGPercent damage_scaling_;
-
+  std::vector<Attributes::TalentScaling> talent_scalings_;
   std::vector<Attributes::BonusStatGain> bonus_stat_gains_;
 
   double damage_ceiling_ = 0;
@@ -63,13 +56,6 @@ class Character {
     damage_bonus_[PYRO] = 0;
     damage_bonus_[PHYSICAL] = 0;
     damage_bonus_[ALL] = 0;
-  }
-
-  void InitTalentDetails() {
-    scaling_stat_[SKILL] = "total_attack";
-    damage_scaling_[SKILL] = SKILL_SCALING_DEFAULT;
-    scaling_stat_[BURST] = "total_attack";
-    damage_scaling_[BURST] = BURST_SCALING_DEFAULT;
   }
 
   // update final stats on stat change
@@ -152,7 +138,6 @@ class Character {
     damage_element_ = "";
     InitCharacterStats();
     InitCharacterDamageBonus();
-    InitTalentDetails();
     updateStatModel();
   }
 
@@ -161,7 +146,6 @@ class Character {
     damage_element_ = damage_element;
     InitCharacterStats();
     InitCharacterDamageBonus();
-    InitTalentDetails();
     updateStatModel();
   }
 
@@ -172,11 +156,10 @@ class Character {
     damage_bonus_ = rhs.damage_bonus_;
     final_stats_ = rhs.stats_;
     damage_element_ = rhs.damage_element_;
-    scaling_stat_ = rhs.scaling_stat_;
-    damage_scaling_ = rhs.damage_scaling_;
     character_level_ = rhs.character_level_;
     artifact_set_ = rhs.artifact_set_;
     bonus_stat_gains_ = rhs.bonus_stat_gains_;
+    talent_scalings_ = rhs.talent_scalings_;
 
     updateStatModel();
   }
@@ -192,16 +175,15 @@ class Character {
 
   // move construct
   Character(Character&& rhs) {
-    character_level_ = rhs.character_level_;
-    stats_ = rhs.stats_;
-    damage_bonus_ = rhs.damage_bonus_;
-    final_stats_ = rhs.stats_;
-    damage_element_ = rhs.damage_element_;
-    scaling_stat_ = rhs.scaling_stat_;
-    damage_scaling_ = rhs.damage_scaling_;
-    character_level_ = rhs.character_level_;
-    artifact_set_ = rhs.artifact_set_;
-    bonus_stat_gains_ = rhs.bonus_stat_gains_;
+    character_level_ = std::move(rhs.character_level_);
+    stats_ = std::move(rhs.stats_);
+    damage_bonus_ = std::move(rhs.damage_bonus_);
+    final_stats_ = std::move(rhs.stats_);
+    damage_element_ = std::move(rhs.damage_element_);
+    character_level_ = std::move(rhs.character_level_);
+    talent_scalings_ = std::move(rhs.talent_scalings_);
+    artifact_set_ = std::move(rhs.artifact_set_);
+    bonus_stat_gains_ = std::move(rhs.bonus_stat_gains_);
 
     updateStatModel();
   }
@@ -213,9 +195,7 @@ class Character {
     std::swap(damage_bonus_, rhs.damage_bonus_);
     std::swap(final_stats_, rhs.stats_);
     std::swap(damage_element_, rhs.damage_element_);
-    std::swap(scaling_stat_, rhs.scaling_stat_);
-    std::swap(damage_scaling_, rhs.damage_scaling_);
-    std::swap(character_level_, rhs.character_level_);
+    std::swap(talent_scalings_, rhs.talent_scalings_);
     std::swap(artifact_set_, rhs.artifact_set_);
     std::swap(bonus_stat_gains_, rhs.bonus_stat_gains_);
 
@@ -259,12 +239,8 @@ class Character {
     return artifact_set_;
   }
 
-  std::string& getTalentScalingStat(std::string talent) {
-    return scaling_stat_[talent];
-  }
-
-  double& getTalentScalingDMG(std::string talent) {
-    return damage_scaling_[talent];
+  const std::vector<Attributes::TalentScaling>& getTalentScalings() const {
+    return talent_scalings_;
   }
 
   const std::vector<Attributes::BonusStatGain>& getBonusStatGains() {
@@ -324,9 +300,8 @@ class Character {
     updateStatModel();
   }
 
-  void setTalentDetails(std::string talent, std::string scaling_stat, double scaling_percent) {
-    scaling_stat_[talent] = scaling_stat;
-    damage_scaling_[talent] = scaling_percent;
+  void addTalentScaling(Attributes::TalentScaling& talentScaling) {
+    talent_scalings_.push_back(talentScaling);
   }
 
   // stat gain bonus like hutao e and 4pc emblem
@@ -337,12 +312,17 @@ class Character {
   void applyStatGains() {
     for (const Attributes::BonusStatGain& bonus : bonus_stat_gains_) {
       double sourceValue = getStat(bonus.source_stat_);
-      double bonusValue = std::min(bonus.max_gain_, (sourceValue - bonus.source_offset_) * bonus.percent_gain_);
+      double bonusValue = (sourceValue - bonus.source_offset_) * bonus.percent_gain_;
+      double cappedBonus = (bonus.max_gain_ == 0) ? bonusValue : std::min(bonus.max_gain_, bonusValue);
 
       std::string targetStat = bonus.target_stat_;
+      targetStat = labelCastToElement(targetStat);
       if (isDmgBonus(targetStat)) {
-        std::string damageBonusType = labelCastToElement(targetStat);
-        setDamageBonus(damageBonusType, damage_bonus_[damageBonusType] + bonusValue);
+        setDamageBonus(targetStat, damage_bonus_[targetStat] + cappedBonus);
+      }
+
+      else {
+        setStat(targetStat, stats_[targetStat] + cappedBonus);
       }
     }
 

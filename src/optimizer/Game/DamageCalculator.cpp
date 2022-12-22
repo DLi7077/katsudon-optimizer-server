@@ -13,11 +13,14 @@ namespace Calculator {
 (BASE_DAMAGE + BONUS_BASE_DMG) *
 (CRIT DMG) * (DMG BONUS) * MELT? * ENEMY_DMG_REDUCE * ENEMY_RESISTANCE
 */
-double baseDamage(Character& character, std::string talent) {
-  std::string talentStatScaling = character.getTalentScalingStat(talent);
-  double talentScalingDMG = character.getTalentScalingDMG(talent);
-
-  return character.getStat(talentStatScaling) * talentScalingDMG;
+double baseDamage(Character& character) {
+  double baseDamage = 0;
+  for (const Attributes::TalentScaling& talentScaling : character.getTalentScalings()) {
+    double damageInstance = character.getStat(talentScaling.source_stat_) * talentScaling.stat_scaling_;
+    baseDamage += damageInstance;
+  }
+  
+  return baseDamage;
 }
 
 double bonusMultipliers(Character& character) {
@@ -81,11 +84,9 @@ double enemyElementResistance(Character& character, Enemy& enemy) {
 double damageOutput(Character& character, Enemy& enemy) {
   // create copy character to apply stat gains
   Character finalized = character;
-
-  // apply stat gains
   finalized.applyStatGains();
 
-  double baseDMG = baseDamage(finalized, BURST);
+  double baseDMG = baseDamage(finalized);
   double multipliers = bonusMultipliers(finalized);
   double DMGReducedPercent = 1 - damageReductionByDefense(finalized, enemy);
   double resistanceMultiplier = enemyElementResistance(finalized, enemy);
