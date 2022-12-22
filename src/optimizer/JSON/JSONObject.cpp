@@ -337,6 +337,15 @@ double JsonObject::double_value() {
   return double_;
 }
 
+std::vector<JsonObject> JsonObject::array_value() {
+  std::vector<JsonObject> result;
+  for (JsonObject*& obj : array_) {
+    result.push_back(JsonObject(*obj));
+  }
+
+  return result;
+}
+
 // overloads
 
 bool JsonObject::operator==(JsonObject& rhs) {
