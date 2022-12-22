@@ -17,8 +17,8 @@ int main(int argc, char** argv) {
   Character character = Parser::CreateCharacter(characterJson);
   Enemy enemy = Parser::CreateEnemy(enemyJson);
 
-
   Character best = Optimize::optimize(character, enemy);
+  best.applyStatGains();
 
   Json::JsonObject bestCharacterJson = best.toJSON();
   LOG(bestCharacterJson);

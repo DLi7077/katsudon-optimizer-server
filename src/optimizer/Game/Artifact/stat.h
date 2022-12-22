@@ -8,6 +8,7 @@ class Stat {
   Stat() {
     label_ = "";
     value_ = 0;
+    rolls_ = 0;
   }
 
   // one-param
@@ -20,6 +21,7 @@ class Stat {
   Stat(const Stat& rhs) {
     label_ = rhs.label_;
     value_ = rhs.value_;
+    rolls_ = rhs.rolls_;
   }
 
   // copy assignment
@@ -33,16 +35,19 @@ class Stat {
   // move constructor
   Stat(Stat&& rhs) {
     label_ = rhs.label_;
+    rolls_ = rhs.rolls_;
     value_ = rhs.value_;
 
     rhs.label_ = "";
     rhs.value_ = 0;
+    rhs.rolls_ = 0;
   }
 
   // move assignment
   Stat& operator=(Stat&& rhs) {
     std::swap(label_, rhs.label_);
     std::swap(value_, rhs.value_);
+    std::swap(rolls_, rhs.rolls_);
 
     return *this;
   }
@@ -53,6 +58,7 @@ class Stat {
   void addRolls(int rolls) {
     double value = Constants::substat_max_roll_mapping_[this->label_];
     value_ += rolls * value;
+    rolls_ += rolls;
     return;
   }
 
@@ -75,7 +81,8 @@ class Stat {
 
   Json::JsonObject toJSON() {
     Json::JsonObject result;
-    result["label"] = Json::JsonObject(JSONUtils::wrap(label_, "\""));
+    std::string roll_label = JSONUtils::wrap(label_ + " (" + std::to_string(rolls_) + ")", "\"");
+    result["label"] = Json::JsonObject(roll_label);
     result["value"] = Json::JsonObject(value_);
 
     return result;
@@ -84,4 +91,5 @@ class Stat {
  private:
   std::string label_;
   double value_;
+  int rolls_ = 0;
 };

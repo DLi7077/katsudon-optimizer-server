@@ -27,8 +27,6 @@ Character optimize(Character& character, Enemy& enemy) {
     double damageA = Calculator::damageOutput(a, enemy);
     double damageB = Calculator::damageOutput(b, enemy);
     return damageA > damageB;
-
-    return true;
   };
 
   const size_t limit = 20;

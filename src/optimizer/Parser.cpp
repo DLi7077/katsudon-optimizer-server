@@ -31,6 +31,8 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   double damage_bonus_elemental = characterJson["damage_bonus_elemental"].double_value();
   double damage_bonus_all = characterJson["damage_bonus_all"].double_value();
   double melt_bonus = characterJson["melt_bonus"].double_value();
+  double base_damage_bonus = characterJson["base_damage_bonus"].double_value();
+  double defense_shred = characterJson["defense_shred"].double_value();
 
   Character character(characterElement);
   character.setLevel(level);
@@ -55,6 +57,8 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
 
   character.setDamageBonus(characterElement, damage_bonus_elemental);
   character.setDamageBonus(ALL, damage_bonus_all);  // other dmg bonus
+  character.setStat("base_damage_bonus", base_damage_bonus);
+  character.setStat("defense_shred", defense_shred);
 
   character.setStat(MELT_BONUS, melt_bonus);
 
@@ -95,12 +99,13 @@ Enemy CreateEnemy(Json::JsonObject& enemyJson) {
   std::string incoming_damage_element = enemyJson["incoming_damage_element"].string_value();
   double enemy_level = enemyJson["level"].double_value();
   double resistance_to_damage_element = enemyJson["resistance_to_damage_element"].double_value();
+  double defense_percent_dropped = enemyJson["defense_percent_dropped"].double_value();
 
   Enemy enemy;
   enemy.setLevel(enemy_level);
   enemy.setAffectedElement(affected_element);
   enemy.setResistance(incoming_damage_element, resistance_to_damage_element);
-
+  enemy.setDefensePercentDropped(defense_percent_dropped);
   return enemy;
 }
 }  // namespace Parser
