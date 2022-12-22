@@ -32,8 +32,6 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   double damage_bonus_all = characterJson["damage_bonus_all"].double_value();
   double melt_bonus = characterJson["melt_bonus"].double_value();
 
-  std::vector<Json::JsonObject> bonusStatGains = characterJson["bonus_stat_gain"].array_value();
-
   Character character(characterElement);
   character.setLevel(level);
 
@@ -60,9 +58,18 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
 
   character.setStat(MELT_BONUS, melt_bonus);
 
-  character.setTalentDetails(BURST, "total_attack", 9.86);
+  // add talent scalings
+
+  std::vector<Json::JsonObject> talentScalings = characterJson["talent_scalings"].array_value();
+  for (Json::JsonObject& scaling : talentScalings) {
+    std::string talent_stat = scaling["talent_stat"].string_value();
+    double talent_percent = scaling["talent_percent"].double_value();
+    Attributes::TalentScaling scalingInstance(talent_stat, talent_percent);
+    character.addTalentScaling(scalingInstance);
+  }
 
   // add bonuses
+  std::vector<Json::JsonObject> bonusStatGains = characterJson["bonus_stat_gain"].array_value();
   for (Json::JsonObject& bonusStatGain : bonusStatGains) {
     std::string source_stat = bonusStatGain["source_stat"].string_value();
     std::string target_stat = bonusStatGain["target_stat"].string_value();
@@ -79,7 +86,7 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
 
     character.addBonusStatGain(statGain);
   }
-  
+
   return character;
 }
 
