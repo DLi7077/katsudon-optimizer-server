@@ -18,8 +18,7 @@ int main(int argc, char** argv) {
   Enemy enemy = Parser::CreateEnemy(enemyJson);
 
   Character best = Optimize::optimize(character, enemy);
-  best.applyStatGains();
-
+  
   Json::JsonObject result = Calculator::toJson(best, enemy);
   LOG(result);
 
