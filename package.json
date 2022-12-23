@@ -1,4 +1,6 @@
 {
+  "main": "dist/app",
+  "typings": "dist/app",
   "scripts": {
     "watch": "npm run compile-optimizer-windows && npm run compile-optimizer-linux && nodemon src/app.js",
     "compile-optimizer-windows": "g++ -std=c++17 -o ./src/optimizer/driver.exe ./src/optimizer/OptimizeDriver.cpp",

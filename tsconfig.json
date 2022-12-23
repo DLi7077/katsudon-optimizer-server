@@ -8,6 +8,8 @@
     "strictFunctionTypes": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
+    "moduleResolution": "node",
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     "sourceMap": true,
     "outDir": "dist",
     "types": ["node"]
