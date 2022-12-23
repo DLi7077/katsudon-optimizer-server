@@ -1,4 +1,4 @@
-// import generateRoutes from "./routes";
+import generateRoutes from "./routes";
 
 import express from "express";
 import cors from "cors";
