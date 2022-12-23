@@ -4,36 +4,37 @@
 
 namespace Parser {
 Character CreateCharacter(Json::JsonObject& characterJson) {
-  std::string characterElement = characterJson["element"].string_value();
-  double level = characterJson["level"].double_value();
+  Json::JsonObject stats = characterJson["stats"];
+  std::string characterElement = stats["element"].string_value();
+  double level = stats["level"].double_value();
   // base stats
-  double base_attack = characterJson["base_attack"].double_value();
-  double base_hp = characterJson["base_hp"].double_value();
-  double base_def = characterJson["base_def"].double_value();
+  double base_attack = stats["base_attack"].double_value();
+  double base_hp = stats["base_hp"].double_value();
+  double base_def = stats["base_def"].double_value();
 
   // bonus attack
-  double flat_attack = characterJson["flat_attack"].double_value();
-  double attack_percent = characterJson["attack_percent"].double_value();
+  double flat_attack = stats["flat_attack"].double_value();
+  double attack_percent = stats["attack_percent"].double_value();
 
   // bonus hp
-  double flat_hp = characterJson["flat_hp"].double_value();
-  double hp_percent = characterJson["hp_percent"].double_value();
+  double flat_hp = stats["flat_hp"].double_value();
+  double hp_percent = stats["hp_percent"].double_value();
 
   // bonus def
-  double flat_def = characterJson["flat_def"].double_value();
-  double def_percent = characterJson["def_percent"].double_value();
+  double flat_def = stats["flat_def"].double_value();
+  double def_percent = stats["def_percent"].double_value();
 
   // dmg bonuses
-  double energy_recharge = characterJson["energy_recharge"].double_value();
-  double elemental_mastery = characterJson["elemental_mastery"].double_value();
-  double crit_rate = characterJson["crit_rate"].double_value();
-  double crit_damage = characterJson["crit_damage"].double_value();
-  double damage_bonus_elemental = characterJson["damage_bonus_elemental"].double_value();
-  double damage_bonus_all = characterJson["damage_bonus_all"].double_value();
-  double melt_bonus = characterJson["melt_bonus"].double_value();
-  double base_damage_bonus = characterJson["base_damage_bonus"].double_value();
-  double defense_shred = characterJson["defense_shred"].double_value();
-  double quicken_bonus = characterJson["quicken_bonus"].double_value();
+  double energy_recharge = stats["energy_recharge"].double_value();
+  double elemental_mastery = stats["elemental_mastery"].double_value();
+  double crit_rate = stats["crit_rate"].double_value();
+  double crit_damage = stats["crit_damage"].double_value();
+  double damage_bonus_elemental = stats["damage_bonus_elemental"].double_value();
+  double damage_bonus_all = stats["damage_bonus_all"].double_value();
+  double melt_bonus = stats["melt_bonus"].double_value();
+  double base_damage_bonus = stats["base_damage_bonus"].double_value();
+  double defense_shred = stats["defense_shred"].double_value();
+  double quicken_bonus = stats["quicken_bonus"].double_value();
 
   Character character(characterElement);
   character.setLevel(level);
