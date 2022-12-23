@@ -6,6 +6,7 @@ enum ELEMENTS {
   GEO = "Geo",
   HYDRO = "Hydro",
   PYRO = "Pyro",
+  PHYSICAL = "Physical",
 }
 
 type Element =
@@ -14,6 +15,7 @@ type Element =
   | ELEMENTS.DENDRO
   | ELEMENTS.ELECTRO
   | ELEMENTS.HYDRO
-  | ELEMENTS.PYRO;
+  | ELEMENTS.PYRO
+  | ELEMENTS.PHYSICAL;
 
 export default Element;

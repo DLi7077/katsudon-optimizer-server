@@ -83,8 +83,9 @@ class Stat {
 
   Json::JsonObject toJSON() {
     Json::JsonObject result;
-    std::string roll_label = JSONUtils::wrap(label_ + " (" + std::to_string(rolls_) + ")", "\"");
-    result["label"] = Json::JsonObject(roll_label);
+    // std::string roll_label = JSONUtils::wrap(label_ + " (" + std::to_string(rolls_) + ")", "\"");
+    result["label"] = Json::JsonObject(Json::TYPE::STRING, label_);
+    result["rolls"] = Json::JsonObject(double(rolls_));
     result["value"] = Json::JsonObject(value_);
 
     return result;

@@ -10,15 +10,15 @@ int main(int argc, char** argv) {
 
   Json::JsonObject input(std::move(argv[1]));
   Json::JsonObject characterJson = input["character"];
+  Json::JsonObject preferenceJson = characterJson["stat_preferences"];
   Json::JsonObject enemyJson = input["enemy"];
-  Json::JsonObject preferenceJson = input["stat_preferences"];
 
   Character character = Parser::CreateCharacter(characterJson);
   Enemy enemy = Parser::CreateEnemy(enemyJson);
   Initial::StatPreference preference = Parser::CreateStatPreferences(preferenceJson);
   std::vector<std::vector<Artifact>> artifactPool = Initial::generateArtifactPool(preference);
 
-  Character best = Optimize::optimize(character, enemy, artifactPool, 50);
+  Character best = Optimize::optimize(character, enemy, artifactPool, 10);
   Json::JsonObject result = Calculator::toJson(best, enemy);
   LOG(result);
 

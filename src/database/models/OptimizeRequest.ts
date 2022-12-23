@@ -52,7 +52,7 @@ export const OptimizeRequestSchema: Schema<OptimizeRequestAttributes> =
   });
 
 const OptimizeRequestModel: Model<OptimizeRequestAttributes> = mongoose.model(
-  "OptimizeRequest",
+  "Optimize Requests",
   OptimizeRequestSchema
 );
 
