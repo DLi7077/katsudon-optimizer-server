@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import {
   DEFAULT_CHARACTER_STATS,
   DEFAULT_ENEMY_STATS,
-} from "../../constants/optimize.js";
-import { runOptimizer } from "../../utils.js";
+} from "../../constants/optimize";
+import { runOptimizer } from "../../utils";
 
 export async function optimize(req: Request, res: Response) {
   const characterStats = {

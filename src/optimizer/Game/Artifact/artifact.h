@@ -15,6 +15,16 @@ class Artifact {
     }
   }
 
+  Artifact(const std::array<std::string, SUBSTAT_COUNT>& substats, std::array<int, SUBSTAT_COUNT> rolls, std::string mainStat) {
+    main_stat_ = Stat(mainStat);
+    main_stat_.setMainStat();
+
+    for (size_t i = 0; i < SUBSTAT_COUNT; i++) {
+      substats_[i] = Stat(substats[i]);
+      substats_[i].addRolls(rolls[i]);
+    }
+  }
+
   // copy constructor
   Artifact(const Artifact& rhs) {
     main_stat_ = Stat(rhs.main_stat_);
