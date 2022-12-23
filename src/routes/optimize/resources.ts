@@ -51,16 +51,16 @@ export async function optimize(req: Request, res: Response) {
     enemy: enemyStats as EnemyAttributes,
   };
 
-  await OptimizeService.create(optimizeRequest).then((created) => {
-    res.status(200);
-    res.json(created);
-  });
+  // await OptimizeService.create(optimizeRequest).then((created) => {
+  //   res.status(200);
+  //   res.json(created);
+  // });
 
-  // console.log(optimizeRequest);
-  // const result = await runOptimizer(JSON.stringify(optimizeRequest));
+  console.log(optimizeRequest);
+  const result = await runOptimizer(JSON.stringify(optimizeRequest));
 
-  // console.log(result);
+  console.log(result);
 
-  // res.status(200);
-  // res.json(result);
+  res.status(200);
+  res.json(result);
 }

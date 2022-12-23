@@ -74,6 +74,7 @@ class Character {
     final_stats_["damage_bonus_physical"] = damage_bonus_[PHYSICAL];
     final_stats_["damage_bonus_all"] = damage_bonus_[ALL];
     final_stats_[MELT_BONUS] = stats_[MELT_BONUS];
+    final_stats_["quicken_bonus"] = stats_["quicken_bonus"];
   }
 
   bool validFinalStat(std::string statLabel) {
@@ -351,7 +352,9 @@ class Character {
     stats["total_attack"] = Json::JsonObject(final_stats_["total_attack"]);
     stats["flat_attack"] = Json::JsonObject(stats_[FLAT_ATK]);
     stats["total_hp"] = Json::JsonObject(final_stats_["total_hp"]);
+    stats["flat_hp"] = Json::JsonObject(stats_[FLAT_HP]);
     stats["total_defense"] = Json::JsonObject(final_stats_["total_defense"]);
+    stats["flat_defense"] = Json::JsonObject(stats_[FLAT_DEF]);
 
     stats["elemental_mastery"] = Json::JsonObject(final_stats_["elemental_mastery"]);
     stats["energy_recharge"] = Json::JsonObject(final_stats_["energy_recharge"]);
@@ -366,8 +369,10 @@ class Character {
     stats["damage_bonus_pyro"] = Json::JsonObject(final_stats_["damage_bonus_pyro"]);
     stats["damage_bonus_physical"] = Json::JsonObject(final_stats_["damage_bonus_physical"]);
     stats["damage_bonus_all"] = Json::JsonObject(final_stats_["damage_bonus_all"]);
+
     stats["base_damage_bonus"] = Json::JsonObject(final_stats_["base_damage_bonus"]);
     stats["defense_shred"] = Json::JsonObject(final_stats_["defense_shred"]);
+    stats["quicken_bonus"] = Json::JsonObject(final_stats_["quicken_bonus"]);
 
     Json::JsonObject statBonuses = Json::JsonObject(Json::TYPE::ARRAY);
     for (Attributes::BonusStatGain& bonus : bonus_stat_gains_) {

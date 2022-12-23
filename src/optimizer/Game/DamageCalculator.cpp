@@ -39,9 +39,6 @@ double meltBonus(Character& character, Enemy& enemy) {
   double reactionBonus = (1 + (2.78 * (EM / (EM + 1400))));
   double meltBonus = character.getStat(MELT_BONUS);
 
-  // std::cout << "Reaction Bonus:\t" << reactionBonus << '\n';
-  // std::cout << "melt Bonus:\t" << meltBonus << '\n';
-
   double multiplier = 1;
   if (dmgElement == PYRO && enemyElement == CRYO)
     multiplier = 2 * (reactionBonus + meltBonus);
@@ -139,16 +136,18 @@ Json::JsonObject toJson(Character& character, Enemy& enemy) {
                         resistanceMultiplier *
                         meltVapMultiplier;
 
-  Json::JsonObject result;
-  result["base_damage"] = Json::JsonObject(baseDamage(finalized));
-  result["base_damage_bonus"] = Json::JsonObject(baseDamageBonus);
-  result["multipliers"] = Json::JsonObject(multipliers);
-  result["dmg_reduced_percent"] = Json::JsonObject(DMGReducedPercent);
-  result["resistance_multiplier"] = Json::JsonObject(resistanceMultiplier);
-  result["melt_vap_multiplier"] = Json::JsonObject(meltVapMultiplier);
-  result["character"] = finalized.toJSON();
-  result["damage_output"] = Json::JsonObject(damageOutput);
+  Json::JsonObject analysis;
+  analysis["base_damage"] = Json::JsonObject(baseDamage(finalized));
+  analysis["base_damage_bonus"] = Json::JsonObject(baseDamageBonus);
+  analysis["multipliers"] = Json::JsonObject(multipliers);
+  analysis["dmg_reduced_percent"] = Json::JsonObject(DMGReducedPercent);
+  analysis["resistance_multiplier"] = Json::JsonObject(resistanceMultiplier);
+  analysis["melt_vap_multiplier"] = Json::JsonObject(meltVapMultiplier);
+  analysis["damage_output"] = Json::JsonObject(damageOutput);
 
+  Json::JsonObject result;
+  result["character"] = finalized.toJSON();
+  result["analysis"] = analysis;
   return result;
 }
 

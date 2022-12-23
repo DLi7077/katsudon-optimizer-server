@@ -1,6 +1,7 @@
 import Element from "../constants/Elements";
 import { FinalStat, BonusStat } from "../constants/Stats";
 
+// request interfaces
 export interface CharacterStats {
   element: Element;
   base_attack: number;
@@ -72,4 +73,67 @@ export interface EnemyAttributes {
 export interface CharacterEnemyRequest {
   character: CharacterAttributes;
   enemy: EnemyAttributes;
+}
+
+// result interfaces
+
+export interface OptimizedFinalStats {
+  level: number;
+  total_attack: number;
+  flat_attack: number;
+  total_defense: number;
+  flat_defense: number;
+  total_hp: number;
+  flat_hp: number;
+  energy_recharge: number;
+  elemental_mastery: number;
+  crit_damage: number;
+  crit_rate: number;
+
+  defense_shred: number;
+  quicken_bonus: number;
+  base_damage_bonus: number;
+
+  damage_bonus_anemo: number;
+  damage_bonus_cryo: number;
+  damage_bonus_dendro: number;
+  damage_bonus_hydro: number;
+  damage_bonus_electro: number;
+  damage_bonus_physical: number;
+  damage_bonus_pyro: number;
+  damage_bonus_all: number;
+}
+
+export interface StatRoll {
+  value: number;
+  label: BonusStat;
+  rolls: number;
+}
+
+export interface Artifact {
+  substats: StatRoll[];
+  main_stat: StatRoll;
+  rolls: number;
+}
+
+export interface BonusStatResult {
+  source_stat: FinalStat;
+  target_stat: BonusStat;
+  bonus: number;
+}
+
+export interface OptimizedCharacterResult {
+  artifacts: Artifact[];
+  bonuses: BonusStatResult[];
+  stats: OptimizedFinalStats;
+}
+
+export interface Analysis {
+  base_damage_bonus: number;
+  base_damage: number;
+  dmg_reduced_percent: number;
+  melt_vap_multiplier: number;
+  resistance_multiplier: number;
+  multipliers: number;
+  damage_output: number;
 }

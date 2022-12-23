@@ -23,12 +23,18 @@ async function ExecuteScript(
   return new Promise((resolve, reject) => {
     const script = scriptPath;
     const optimize = spawn(script, args);
+    let output = "";
     optimize.stdout.on("data", (data: string) => {
-      resolve(data.toString());
+      output += data.toString();
     });
 
     optimize.stderr.on("data", (error: string) => {
       reject(error);
+    });
+
+    optimize.on("close", (error_code) => {
+      if (error_code != 0) reject(`{error: "ended with code ${error_code}"}`);
+      resolve(output);
     });
   });
 }
