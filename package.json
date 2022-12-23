@@ -7,7 +7,7 @@
     "compile-optimizer-linux": "g++ -std=c++17 -o ./src/optimizer/driver.out ./src/optimizer/OptimizeDriver.cpp",
     "build-ts": "tsc",
     "build": "npm run build-ts",
-    "start": "npm run build && node dist/app.js",
+    "start": "node dist/app.js",
     "postinstall": "chmod -R +x src/*"
   },
   "dependencies": {
