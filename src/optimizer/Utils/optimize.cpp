@@ -6,7 +6,7 @@
 namespace Optimize {
 
 // https://stackoverflow.com/questions/16111337/declaring-a-priority-queue-in-c-with-a-custom-comparator
-Character optimize(Character& character, Enemy& enemy) {
+Character optimize(Character& character, Enemy& enemy, size_t optimizeFilter = 20) {
   // std::cout << "Flower Artifacts:\t" << Initial::FlowerArtifacts.size() << "\n";
   // std::cout << "Feather Artifacts:\t" << Initial::FeatherArtifacts.size() << "\n";
   // std::cout << "Sands Artifacts:\t" << Initial::SandsArtifacts.size() << "\n";
@@ -29,7 +29,7 @@ Character optimize(Character& character, Enemy& enemy) {
     return damageA > damageB;
   };
 
-  const size_t limit = 20;
+  const size_t limit = optimizeFilter;
   std::vector<Character> population = {character};
   std::priority_queue<
       Character,
