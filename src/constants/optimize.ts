@@ -47,6 +47,39 @@ export const DEFAULT_ENEMY_STATS = {
   defense_percent_dropped: 0,
 };
 
+export const DEFAULT_STAT_PREF = {
+  substats: [
+    // at least 5 stats
+    "Flat Attack",
+    "ATK %",
+    "Elemental Mastery",
+    "Energy Recharge%",
+    "Crit Damage",
+  ],
+  flower_main_stats: [
+    // only flat hp
+    "Flat HP",
+  ],
+  feather_main_stats: [
+    // only flat atk
+    "Flat Attack",
+  ],
+  sands_main_stats: [
+    // at least 1 stat
+    "ATK %",
+    "Energy Recharge%",
+  ],
+  goblet_main_stats: [
+    // at least 1 stat
+    "Electro DMG Bonus%",
+    "ATK %",
+  ],
+  circlet_main_stats: [
+    // at least 1 stat
+    "ATK %",
+    "Crit Damage",
+  ],
+};
 /*
 {
   "character": {

@@ -4,9 +4,13 @@ dotenv.config();
 
 export async function runOptimizer(jsonString: string): Promise<string> {
   const run = `./src/optimizer/driver.${process.env.FILE_TYPE ?? "out"}`;
-  const result: string = await ExecuteScript(`${run}`, [jsonString]).catch(
-    (err) => `{error: ${err}}`
-  );
+  const result: string = await ExecuteScript(`${run}`, [jsonString])
+    .then((res: any) => {
+      if (!isJsonString(res)) return { error: res };
+
+      return JSON.parse(res);
+    })
+    .catch((err) => `{error: ${err}}`);
 
   return result;
 }
@@ -40,4 +44,13 @@ async function Compile(command: string): Promise<string> {
       resolve(stdout ?? stderr);
     });
   });
+}
+
+function isJsonString(text: string): boolean {
+  try {
+    JSON.parse(text);
+  } catch (e: any) {
+    return false;
+  }
+  return true;
 }
