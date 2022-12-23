@@ -1,4 +1,4 @@
-import generateRoutes from "./routes/index.js";
+// import generateRoutes from "./routes";
 
 import express from "express";
 import cors from "cors";
@@ -15,4 +15,4 @@ app.listen(port, async () => {
   console.log(`Test apis with http://localhost:${port}/api`);
 });
 
-generateRoutes(app);
+// generateRoutes(app);
