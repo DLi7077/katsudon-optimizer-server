@@ -3,6 +3,6 @@ import { optimize } from "./resources";
 
 const router: Router = express.Router();
 
-router.get("/", optimize);
+router.post("/", optimize);
 
 export default router;

@@ -37,20 +37,6 @@ export interface BonusStatGain {
   max_gain: number;
 }
 
-export interface CharacterAttributes {
-  stats: CharacterStats;
-  talent_scalings: TalentScaling[];
-  bonus_stat_gain: BonusStatGain[];
-}
-
-export interface EnemyAttributes {
-  level: number;
-  affected_element: Element;
-  incoming_damage_element: Element;
-  resistance_to_damage_element: number;
-  defense_percent_dropped: number;
-}
-
 export interface StatPreference {
   substats: [
     // at least 5 stats
@@ -66,4 +52,24 @@ export interface StatPreference {
   sands_main_stats: [BonusStat, ...BonusStat[]]; // at least 1
   goblet_main_stats: [BonusStat, ...BonusStat[]]; // at least 1
   circlet_main_stats: [BonusStat, ...BonusStat[]]; // at least 1
+}
+
+export interface CharacterAttributes {
+  stats: CharacterStats;
+  talent_scalings: TalentScaling[];
+  bonus_stat_gain: BonusStatGain[];
+  stat_preferences: StatPreference;
+}
+
+export interface EnemyAttributes {
+  level: number;
+  affected_element: Element;
+  incoming_damage_element: Element;
+  resistance_to_damage_element: number;
+  defense_percent_dropped: number;
+}
+
+export interface CharacterEnemyRequest {
+  character: CharacterAttributes;
+  enemy: EnemyAttributes;
 }
