@@ -16,6 +16,9 @@ export const DEFAULT_CHARACTER_STATS = {
   damage_bonus_elemental: 0,
   damage_bonus_all: 0,
   melt_bonus: 0,
+  base_damage_bonus: 0,
+  defense_shred: 0,
+  quicken_bonus: 0,
 
   talent_stat: "total_attack",
   talent_percent: 0,
@@ -41,5 +44,5 @@ export const DEFAULT_ENEMY_STATS = {
   enemy_level: 0,
   affected_element: "ex: Cryo",
   resistance_to_damage_element: 0,
-  defense_percent_drop: 0,
+  defense_percent_dropped: 0,
 };

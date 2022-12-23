@@ -20,8 +20,8 @@ int main(int argc, char** argv) {
   Character best = Optimize::optimize(character, enemy);
   best.applyStatGains();
 
-  Json::JsonObject bestCharacterJson = best.toJSON();
-  LOG(bestCharacterJson);
+  Json::JsonObject result = Calculator::toJson(best, enemy);
+  LOG(result);
 
   /**
    * TODO:

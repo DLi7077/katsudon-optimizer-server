@@ -55,19 +55,35 @@ double meltBonus(Character& character, Enemy& enemy) {
   return multiplier;
 }
 
+double quickenBonusMultiplier(int elementalMastery) {
+  return 5 * elementalMastery / (elementalMastery + 1200);
+}
+
+// https://genshin-impact.fandom.com/wiki/Damage#Catalyze_Damage_Bonus
+double quickenDamageBonus(Character& character, Enemy& enemy) {
+  bool DendroOnElectro = character.getDamageElement() == DENDRO && enemy.getAffectedElement() == ELECTRO;
+  bool ElectroOnDendro = character.getDamageElement() == ELECTRO && enemy.getAffectedElement() == DENDRO;
+
+  if (!DendroOnElectro && !ElectroOnDendro) return 0;
+
+  double quicken_em_multiplier = quickenBonusMultiplier(character.getStat("elemental_mastery"));
+  double quicken_bonus = character.getStat("quicken_bonus");
+  double quicken_reaction_multiplier = DendroOnElectro ? 1.25 : 1.15;
+  double quicken_base_damage = Constants::character_quicken_base[character.getLevel()];
+
+  return (1 + quicken_em_multiplier + quicken_bonus) * quicken_reaction_multiplier * quicken_base_damage;
+}
+
 // https://library.keqingmains.com/combat-mechanics/damage/damage-formula#enemy-defense
 double damageReductionByDefense(Character& character, Enemy& enemy) {
   int characterLevel = character.getLevel();
   int enemyLevel = enemy.getLevel();
 
-  // TODO: add defense shred
-  double enemyDefense = enemyLevel + 100;
   double defensePercentDropped = enemy.getDefensePercentDropped();
   double defensePercentIgnored = character.getStat("defense_shred");
+  double reducedDefense = (enemyLevel + 100) * (1 - defensePercentDropped) * (1 - defensePercentIgnored);
 
-  double reducedDefense = enemyDefense * (1 - defensePercentDropped) * (1 - defensePercentIgnored);
-
-  double DMGReduction = (characterLevel + 100) / ((characterLevel + 100) + reducedDefense);
+  double DMGReduction = (characterLevel + 100) / (characterLevel + 100 + reducedDefense);
 
   return DMGReduction;
 }
@@ -79,11 +95,9 @@ double enemyElementResistance(Character& character, Enemy& enemy) {
   if (resistance < 0) {
     return 1 - (resistance / 2);
   }
-
   if (resistance >= 0.75) {
     return 1 / (4 * resistance + 1);
   }
-
   return 1 - resistance;
 }
 
@@ -92,7 +106,9 @@ double damageOutput(Character& character, Enemy& enemy) {
   Character finalized = character;
   finalized.applyStatGains();
 
-  double baseDMG = baseDamage(finalized);
+  double baseDamageBonus = quickenDamageBonus(finalized, enemy) + character.getStat("base_damage_bonus");
+
+  double baseDMG = baseDamage(finalized) + baseDamageBonus;
   double multipliers = bonusMultipliers(finalized);
   double DMGReducedPercent = damageReductionByDefense(finalized, enemy);
   double resistanceMultiplier = enemyElementResistance(finalized, enemy);
@@ -103,6 +119,37 @@ double damageOutput(Character& character, Enemy& enemy) {
          DMGReducedPercent *
          resistanceMultiplier *
          meltVapMultiplier;
+}
+
+Json::JsonObject toJson(Character& character, Enemy& enemy) {
+  Character finalized = character;
+  finalized.applyStatGains();
+
+  double baseDamageBonus = quickenDamageBonus(finalized, enemy) + finalized.getStat("base_damage_bonus");
+
+  double baseDMG = baseDamage(finalized) + baseDamageBonus;
+  double multipliers = bonusMultipliers(finalized);
+  double DMGReducedPercent = damageReductionByDefense(finalized, enemy);
+  double resistanceMultiplier = enemyElementResistance(finalized, enemy);
+  double meltVapMultiplier = meltBonus(finalized, enemy);
+
+  double damageOutput = baseDMG *
+                        multipliers *
+                        DMGReducedPercent *
+                        resistanceMultiplier *
+                        meltVapMultiplier;
+
+  Json::JsonObject result;
+  result["base_damage"] = Json::JsonObject(baseDamage(finalized));
+  result["base_damage_bonus"] = Json::JsonObject(baseDamageBonus);
+  result["multipliers"] = Json::JsonObject(multipliers);
+  result["dmg_reduced_percent"] = Json::JsonObject(DMGReducedPercent);
+  result["resistance_multiplier"] = Json::JsonObject(resistanceMultiplier);
+  result["melt_vap_multiplier"] = Json::JsonObject(meltVapMultiplier);
+  result["character"] = finalized.toJSON();
+  result["damage_output"] = Json::JsonObject(damageOutput);
+
+  return result;
 }
 
 }  // namespace Calculator

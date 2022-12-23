@@ -97,6 +97,7 @@ class Character {
         "damage_bonus_all",
         "base_damage_bonus",
         "defense_shred",
+        "quicken_bonus",
         MELT_BONUS,
     };
     for (const std::string& stat : validStats) {
@@ -316,8 +317,9 @@ class Character {
       double cappedBonus = (bonus.max_gain_ == 0) ? bonusValue : std::min(bonus.max_gain_, bonusValue);
 
       std::string targetStat = bonus.target_stat_;
-      targetStat = labelCastToElement(targetStat);
+      // LOG_LINE("cast " << targetStat << " to " << labelCastToElement(targetStat));
       if (isDmgBonus(targetStat)) {
+        targetStat = labelCastToElement(targetStat);
         setDamageBonus(targetStat, damage_bonus_[targetStat] + cappedBonus);
       }
 
@@ -353,34 +355,50 @@ class Character {
   }
 
   Json::JsonObject toJSON() {
-    Json::JsonObject result;
-    result["level"] = Json::JsonObject(character_level_);
-    result["total_attack"] = Json::JsonObject(final_stats_["total_attack"]);
-    result["total_hp"] = Json::JsonObject(final_stats_["total_hp"]);
-    result["total_defense"] = Json::JsonObject(final_stats_["total_defense"]);
+    Json::JsonObject character;
+    Json::JsonObject stats;
+    stats["level"] = Json::JsonObject(character_level_);
+    stats["total_attack"] = Json::JsonObject(final_stats_["total_attack"]);
+    stats["total_hp"] = Json::JsonObject(final_stats_["total_hp"]);
+    stats["total_defense"] = Json::JsonObject(final_stats_["total_defense"]);
 
-    result["elemental_mastery"] = Json::JsonObject(final_stats_["elemental_mastery"]);
-    result["energy_recharge"] = Json::JsonObject(final_stats_["energy_recharge"]);
-    result["crit_rate"] = Json::JsonObject(final_stats_["crit_rate"]);
-    result["crit_damage"] = Json::JsonObject(final_stats_["crit_damage"]);
+    stats["elemental_mastery"] = Json::JsonObject(final_stats_["elemental_mastery"]);
+    stats["energy_recharge"] = Json::JsonObject(final_stats_["energy_recharge"]);
+    stats["crit_rate"] = Json::JsonObject(final_stats_["crit_rate"]);
+    stats["crit_damage"] = Json::JsonObject(final_stats_["crit_damage"]);
 
-    result["damage_bonus_anemo"] = Json::JsonObject(final_stats_["damage_bonus_anemo"]);
-    result["damage_bonus_cryo"] = Json::JsonObject(final_stats_["damage_bonus_cryo"]);
-    result["damage_bonus_dendro"] = Json::JsonObject(final_stats_["damage_bonus_dendro"]);
-    result["damage_bonus_electro"] = Json::JsonObject(final_stats_["damage_bonus_electro"]);
-    result["damage_bonus_hydro"] = Json::JsonObject(final_stats_["damage_bonus_hydro"]);
-    result["damage_bonus_pyro"] = Json::JsonObject(final_stats_["damage_bonus_pyro"]);
-    result["damage_bonus_physical"] = Json::JsonObject(final_stats_["damage_bonus_physical"]);
-    result["damage_bonus_all"] = Json::JsonObject(final_stats_["damage_bonus_all"]);
-    result["base_damage_bonus"] = Json::JsonObject(final_stats_["base_damage_bonus"]);
-    result["defense_shred"] = Json::JsonObject(final_stats_["defense_shred"]);
-    result["artifacts"] = Json::JsonObject(Json::TYPE::ARRAY);
-    for (Artifact& artifact : artifact_set_) {
-      result["artifacts"].push_back(artifact.toJSON());
+    stats["damage_bonus_anemo"] = Json::JsonObject(final_stats_["damage_bonus_anemo"]);
+    stats["damage_bonus_cryo"] = Json::JsonObject(final_stats_["damage_bonus_cryo"]);
+    stats["damage_bonus_dendro"] = Json::JsonObject(final_stats_["damage_bonus_dendro"]);
+    stats["damage_bonus_electro"] = Json::JsonObject(final_stats_["damage_bonus_electro"]);
+    stats["damage_bonus_hydro"] = Json::JsonObject(final_stats_["damage_bonus_hydro"]);
+    stats["damage_bonus_pyro"] = Json::JsonObject(final_stats_["damage_bonus_pyro"]);
+    stats["damage_bonus_physical"] = Json::JsonObject(final_stats_["damage_bonus_physical"]);
+    stats["damage_bonus_all"] = Json::JsonObject(final_stats_["damage_bonus_all"]);
+    stats["base_damage_bonus"] = Json::JsonObject(final_stats_["base_damage_bonus"]);
+    stats["defense_shred"] = Json::JsonObject(final_stats_["defense_shred"]);
+
+    Json::JsonObject statBonuses = Json::JsonObject(Json::TYPE::ARRAY);
+    for (Attributes::BonusStatGain& bonus : bonus_stat_gains_) {
+      Json::JsonObject stat_gain;
+      double sourceValue = getStat(bonus.source_stat_);
+      double bonusValue = (sourceValue - bonus.source_offset_) * bonus.percent_gain_;
+      double cappedBonus = (bonus.max_gain_ == 0) ? bonusValue : std::min(bonus.max_gain_, bonusValue);
+
+      stat_gain["source_stat"] = Json::JsonObject(Json::TYPE::STRING, bonus.source_stat_);
+      stat_gain["target_stat"] = Json::JsonObject(Json::TYPE::STRING, bonus.target_stat_);
+      stat_gain["bonus"] = Json::JsonObject(cappedBonus);
+      statBonuses.push_back(stat_gain);
     }
 
-    result["damage_ceiling"] = Json::JsonObject(damage_ceiling_);
+    character["damage_ceiling"] = Json::JsonObject(damage_ceiling_);
+    character["stats"] = stats;
+    character["bonuses"] = statBonuses;
+    character["artifacts"] = Json::JsonObject(Json::TYPE::ARRAY);
+    for (Artifact& artifact : artifact_set_) {
+      character["artifacts"].push_back(artifact.toJSON());
+    }
 
-    return result;
+    return character;
   }
 };

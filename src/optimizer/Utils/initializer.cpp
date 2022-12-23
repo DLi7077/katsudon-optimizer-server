@@ -6,24 +6,23 @@ namespace Initial {
 
 vector<string> subStatPreference = {
     FLAT_ATK,
-    HP_PERCENT,
-    FLAT_HP,
     ATK_PERCENT,
     ELEMENTAL_MASTERY,
+    ENERGY_RECHARGE,
     CRIT_DAMAGE,
 };
 
 vector<string> mainStatPreference = {
     FLAT_HP,   // Flower
     FLAT_ATK,  // Feather
-    HP_PERCENT,
-    ELEMENTAL_MASTERY,
-    PYRO_DAMAGE_BONUS,
+    ATK_PERCENT,
+    ENERGY_RECHARGE,
+    ELECTRO_DAMAGE_BONUS,
     CRIT_DAMAGE,
 };
 
 vector<string> mainStatGobletPref = {
-    PYRO_DAMAGE_BONUS,
+    ELECTRO_DAMAGE_BONUS,
 };
 vector<string> mainStatCircletPref = {
     CRIT_DAMAGE,
@@ -31,7 +30,7 @@ vector<string> mainStatCircletPref = {
 
 vector<string> FlowerMainStats = {FLAT_HP};
 vector<string> FeatherMainStats = {FLAT_ATK};
-vector<string> SandsMainStats = {HP_PERCENT, ATK_PERCENT, ELEMENTAL_MASTERY};
+vector<string> SandsMainStats = {ATK_PERCENT, ELEMENTAL_MASTERY};
 vector<string> GobletMainStats = {PYRO_DAMAGE_BONUS};
 vector<string> CircletMainStats = {CRIT_DAMAGE, ELEMENTAL_MASTERY};
 
