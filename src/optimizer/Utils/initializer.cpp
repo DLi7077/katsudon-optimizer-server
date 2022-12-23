@@ -3,55 +3,59 @@
 #include "./generate.h"
 
 namespace Initial {
-
-vector<string> subStatPreference = {
-    FLAT_ATK,
-    ATK_PERCENT,
-    ELEMENTAL_MASTERY,
-    ENERGY_RECHARGE,
-    CRIT_DAMAGE,
+    
+struct StatPreference {
+  std::vector<std::string> substat_preferences_;
+  std::vector<std::string> flower_main_stats_;
+  std::vector<std::string> feather_main_stats_;
+  std::vector<std::string> sands_main_stats_;
+  std::vector<std::string> goblet_main_stats_;
+  std::vector<std::string> circlet_main_stats_;
 };
 
-vector<string> mainStatPreference = {
-    FLAT_HP,   // Flower
-    FLAT_ATK,  // Feather
-    ATK_PERCENT,
-    ENERGY_RECHARGE,
-    ELECTRO_DAMAGE_BONUS,
-    CRIT_DAMAGE,
-};
+std::vector<Artifact> generateArtifacts(
+    std::vector<std::string>& mainStatPref,
+    std::vector<std::string>& mainStatPossible,
+    std::vector<std::string>& substatPreference) {
+  std::vector<std::string> artifactMainStats = Utils::intersection(mainStatPref, mainStatPossible);
+  std::vector<Artifact> createdArtifacts = Generate::generateArtifacts(artifactMainStats, substatPreference);
 
-vector<string> mainStatGobletPref = {
-    ELECTRO_DAMAGE_BONUS,
-};
-vector<string> mainStatCircletPref = {
-    CRIT_DAMAGE,
-};
+  return createdArtifacts;
+}
 
-vector<string> FlowerMainStats = {FLAT_HP};
-vector<string> FeatherMainStats = {FLAT_ATK};
-vector<string> SandsMainStats = {ATK_PERCENT, ELEMENTAL_MASTERY};
-vector<string> GobletMainStats = {PYRO_DAMAGE_BONUS};
-vector<string> CircletMainStats = {CRIT_DAMAGE, ELEMENTAL_MASTERY};
+std::vector<std::vector<Artifact>> generateArtifactPool(StatPreference& preference) {
+  std::vector<Artifact> flowerArtifacts = generateArtifacts(
+      preference.flower_main_stats_,
+      Constants::artifact_main_stats_[FLOWER],
+      preference.substat_preferences_);
 
-// unordered_map<string, vector<string>> mainStatPreference = {
-//     {FLOWER, FlowerMainStats},
-//     {FEATHER, FeatherMainStats},
-//     {SANDS, SandsMainStats},
-//     {GOBLET, GobletMainStats},
-//     {CIRCLET, CircletMainStats},
-// };
+  std::vector<Artifact> featherArtifacts = generateArtifacts(
+      preference.feather_main_stats_,
+      Constants::artifact_main_stats_[FEATHER],
+      preference.substat_preferences_);
 
-vector<string> FlowerMainPref = Utils::intersection(Constants::artifact_main_stats_[FLOWER], mainStatPreference);
-vector<string> FeatherMainPref = Utils::intersection(Constants::artifact_main_stats_[FEATHER], mainStatPreference);
-vector<string> SandsMainPref = Utils::intersection(Constants::artifact_main_stats_[SANDS], mainStatPreference);
-vector<string> GobletMainPref = Utils::intersection(Constants::artifact_main_stats_[GOBLET], mainStatGobletPref);
-vector<string> CircletMainPref = Utils::intersection(Constants::artifact_main_stats_[CIRCLET], mainStatCircletPref);
+  std::vector<Artifact> sandsArtifacts = generateArtifacts(
+      preference.sands_main_stats_,
+      Constants::artifact_main_stats_[SANDS],
+      preference.substat_preferences_);
 
-vector<Artifact> FlowerArtifacts = Generate::generateArtifacts(FlowerMainPref, subStatPreference);
-vector<Artifact> FeatherArtifacts = Generate::generateArtifacts(FeatherMainPref, subStatPreference);
-vector<Artifact> SandsArtifacts = Generate::generateArtifacts(SandsMainPref, subStatPreference);
-vector<Artifact> GobletArtifacts = Generate::generateArtifacts(GobletMainPref, subStatPreference);
-vector<Artifact> CircletArtifacts = Generate::generateArtifacts(CircletMainPref, subStatPreference);
+  std::vector<Artifact> gobletArtifacts = generateArtifacts(
+      preference.goblet_main_stats_,
+      Constants::artifact_main_stats_[GOBLET],
+      preference.substat_preferences_);
+
+  std::vector<Artifact> circletArtifacts = generateArtifacts(
+      preference.circlet_main_stats_,
+      Constants::artifact_main_stats_[CIRCLET],
+      preference.substat_preferences_);
+
+  return {
+      std::move(flowerArtifacts),
+      std::move(featherArtifacts),
+      std::move(sandsArtifacts),
+      std::move(gobletArtifacts),
+      std::move(circletArtifacts),
+  };
+}
 
 }  // namespace Initial

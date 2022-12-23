@@ -110,4 +110,35 @@ Enemy CreateEnemy(Json::JsonObject& enemyJson) {
   enemy.setDefensePercentDropped(defense_percent_dropped);
   return enemy;
 }
+
+Initial::StatPreference CreateStatPreferences(Json::JsonObject& preferenceJson) {
+  Initial::StatPreference result;
+  std::vector<Json::JsonObject> substats = preferenceJson["substats"].array_value();
+  std::vector<Json::JsonObject> flower_main_stats = preferenceJson["flower_main_stats"].array_value();
+  std::vector<Json::JsonObject> feather_main_stats = preferenceJson["feather_main_stats"].array_value();
+  std::vector<Json::JsonObject> sands_main_stats = preferenceJson["sands_main_stats"].array_value();
+  std::vector<Json::JsonObject> goblet_main_stats = preferenceJson["goblet_main_stats"].array_value();
+  std::vector<Json::JsonObject> circlet_main_stats = preferenceJson["circlet_main_stats"].array_value();
+
+  for (Json::JsonObject& substat : substats) {
+    result.substat_preferences_.push_back(substat.string_value());
+  }
+  for (Json::JsonObject& main_stat : flower_main_stats) {
+    result.flower_main_stats_.push_back(main_stat.string_value());
+  }
+  for (Json::JsonObject& main_stat : feather_main_stats) {
+    result.feather_main_stats_.push_back(main_stat.string_value());
+  }
+  for (Json::JsonObject& main_stat : sands_main_stats) {
+    result.sands_main_stats_.push_back(main_stat.string_value());
+  }
+  for (Json::JsonObject& main_stat : goblet_main_stats) {
+    result.goblet_main_stats_.push_back(main_stat.string_value());
+  }
+  for (Json::JsonObject& main_stat : circlet_main_stats) {
+    result.circlet_main_stats_.push_back(main_stat.string_value());
+  }
+
+  return result;
+}
 }  // namespace Parser
