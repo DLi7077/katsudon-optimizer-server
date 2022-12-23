@@ -317,7 +317,6 @@ class Character {
       double cappedBonus = (bonus.max_gain_ == 0) ? bonusValue : std::min(bonus.max_gain_, bonusValue);
 
       std::string targetStat = bonus.target_stat_;
-      // LOG_LINE("cast " << targetStat << " to " << labelCastToElement(targetStat));
       if (isDmgBonus(targetStat)) {
         targetStat = labelCastToElement(targetStat);
         setDamageBonus(targetStat, damage_bonus_[targetStat] + cappedBonus);
