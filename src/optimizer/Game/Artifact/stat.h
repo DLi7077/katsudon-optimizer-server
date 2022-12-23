@@ -63,7 +63,9 @@ class Stat {
   }
 
   void setMainStat() {
+    int mainStatMaxRolls = 20;
     value_ = Constants::main_stat_max_roll_mapping_[label_];
+    rolls_ = mainStatMaxRolls;
   }
 
   std::string& label() {
@@ -91,5 +93,5 @@ class Stat {
  private:
   std::string label_;
   double value_;
-  int rolls_ = 0;
+  size_t rolls_ = 0;
 };

@@ -24,8 +24,8 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   double def_percent = characterJson["def_percent"].double_value();
 
   // dmg bonuses
-  double elemental_mastery = characterJson["elemental_mastery"].double_value();
   double energy_recharge = characterJson["energy_recharge"].double_value();
+  double elemental_mastery = characterJson["elemental_mastery"].double_value();
   double crit_rate = characterJson["crit_rate"].double_value();
   double crit_damage = characterJson["crit_damage"].double_value();
   double damage_bonus_elemental = characterJson["damage_bonus_elemental"].double_value();
@@ -33,6 +33,7 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   double melt_bonus = characterJson["melt_bonus"].double_value();
   double base_damage_bonus = characterJson["base_damage_bonus"].double_value();
   double defense_shred = characterJson["defense_shred"].double_value();
+  double quicken_bonus = characterJson["quicken_bonus"].double_value();
 
   Character character(characterElement);
   character.setLevel(level);
@@ -59,6 +60,7 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   character.setDamageBonus(ALL, damage_bonus_all);  // other dmg bonus
   character.setStat("base_damage_bonus", base_damage_bonus);
   character.setStat("defense_shred", defense_shred);
+  character.setStat("quicken_bonus", quicken_bonus);
 
   character.setStat(MELT_BONUS, melt_bonus);
 
