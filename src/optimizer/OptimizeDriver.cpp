@@ -17,10 +17,24 @@ int main(int argc, char** argv) {
   Character character = Parser::CreateCharacter(characterJson);
   Enemy enemy = Parser::CreateEnemy(enemyJson);
 
+  // std::array<std::string, SUBSTAT_COUNT> substats = {
+  //     ENERGY_RECHARGE,
+  //     ENERGY_RECHARGE,
+  //     ENERGY_RECHARGE,
+  //     ENERGY_RECHARGE,
+  // };
+
+  // Artifact test(substats, ATK_PERCENT);
+
+  // character.addArtifact(test);
+
   Character best = Optimize::optimize(character, enemy);
-  
+
   Json::JsonObject result = Calculator::toJson(best, enemy);
   LOG(result);
+
+  // Json::JsonObject result = Calculator::toJson(character, enemy);
+  // LOG(result);
 
   /**
    * TODO:

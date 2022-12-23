@@ -56,7 +56,7 @@ double meltBonus(Character& character, Enemy& enemy) {
 }
 
 double quickenBonusMultiplier(int elementalMastery) {
-  return 5 * elementalMastery / (elementalMastery + 1200);
+  return 5 * elementalMastery / double(elementalMastery + 1200);
 }
 
 // https://genshin-impact.fandom.com/wiki/Damage#Catalyze_Damage_Bonus
