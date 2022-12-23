@@ -59,8 +59,6 @@ Character optimize(Character& character, Enemy& enemy) {
   }
 
   Character best = population.back();
-  double damageCeiling = Calculator::damageOutput(best, enemy);
-  best.setDamageCeiling(damageCeiling);
 
   return best;
 }

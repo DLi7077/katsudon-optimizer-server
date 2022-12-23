@@ -28,8 +28,6 @@ class Character {
   std::vector<Attributes::TalentScaling> talent_scalings_;
   std::vector<Attributes::BonusStatGain> bonus_stat_gains_;
 
-  double damage_ceiling_ = 0;
-
   void InitCharacterStats() {
     stats_[BASE_ATK] = DEFAULT_BASE_ATK;
     stats_[BASE_HP] = DEFAULT_BASE_HP;
@@ -212,10 +210,6 @@ class Character {
     return character_level_;
   }
 
-  double getDamageCeiling() {
-    return damage_ceiling_;
-  }
-
   std::string& getDamageElement() {
     return damage_element_;
   }
@@ -252,9 +246,6 @@ class Character {
     character_level_ = level;
   }
 
-  void setDamageCeiling(double dmg) {
-    damage_ceiling_ = dmg;
-  }
   // modify base stats
   void setStat(std::string label, double value) {
     stats_[label] = value;
@@ -358,6 +349,7 @@ class Character {
     Json::JsonObject stats;
     stats["level"] = Json::JsonObject(character_level_);
     stats["total_attack"] = Json::JsonObject(final_stats_["total_attack"]);
+    stats["flat_attack"] = Json::JsonObject(stats_[FLAT_ATK]);
     stats["total_hp"] = Json::JsonObject(final_stats_["total_hp"]);
     stats["total_defense"] = Json::JsonObject(final_stats_["total_defense"]);
 
@@ -390,7 +382,6 @@ class Character {
       statBonuses.push_back(stat_gain);
     }
 
-    character["damage_ceiling"] = Json::JsonObject(damage_ceiling_);
     character["stats"] = stats;
     character["bonuses"] = statBonuses;
     character["artifacts"] = Json::JsonObject(Json::TYPE::ARRAY);
