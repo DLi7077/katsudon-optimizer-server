@@ -1,12 +1,5 @@
 import _ from "lodash";
 import { Request, Response } from "express";
-import {
-  DEFAULT_CHARACTER_STATS,
-  DEFAULT_STAT_PREF,
-  DEFAULT_TALENT_SCALING,
-  DEFAULT_BONUS_STAT_GAINS,
-  DEFAULT_ENEMY_STATS,
-} from "../../constants/optimize";
 import { runOptimizer } from "../../utils";
 import {
   BonusStatGain,
@@ -14,7 +7,15 @@ import {
   EnemyAttributes,
   StatPreference,
   TalentScaling,
+  CharacterAttributes,
+  CharacterEnemyRequest,
 } from "interface";
+import {
+  DEFAULT_CHARACTER_STATS,
+  DEFAULT_STAT_PREF,
+  DEFAULT_ENEMY_STATS,
+} from "../../constants/optimize";
+import OptimizeService from "../../services/Optimize";
 
 export async function optimize(req: Request, res: Response) {
   const characterStats: CharacterStats = {
@@ -31,32 +32,35 @@ export async function optimize(req: Request, res: Response) {
     req.body,
     "character.bonus_stat_gain"
   );
-
   const enemyStats: EnemyAttributes = {
     ...DEFAULT_ENEMY_STATS,
     ..._.get(req.body, "enemy"),
   };
-
   const statPreferences: StatPreference = {
     ...DEFAULT_STAT_PREF,
-    ...(_.get(req.body, "stat_preferences") ?? {}),
+    ..._.get(req.body, "stat_preferences"),
   };
 
-  const variables = {
+  const optimizeRequest: CharacterEnemyRequest = {
     character: {
       stats: characterStats,
       talent_scalings: characterTalents,
       bonus_stat_gain: bonusStatGains,
-    },
-    enemy: enemyStats,
-    stat_preferences: statPreferences,
+      stat_preferences: statPreferences,
+    } as CharacterAttributes,
+    enemy: enemyStats as EnemyAttributes,
   };
 
-  console.log(variables);
-  const result = await runOptimizer(JSON.stringify(variables));
+  await OptimizeService.create(optimizeRequest).then((created) => {
+    res.status(200);
+    res.json(created);
+  });
 
-  console.log(result);
+  // console.log(optimizeRequest);
+  // const result = await runOptimizer(JSON.stringify(optimizeRequest));
 
-  res.status(200);
-  res.json(result);
+  // console.log(result);
+
+  // res.status(200);
+  // res.json(result);
 }

@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import { Database } from "../types/db";
-import OptimizeRequestModel from "./models/OptimizeRequest";
+import Models from "./models";
 
 const database: Database = {
   mongoose,
-  OptimizeRequest: OptimizeRequestModel,
+  OptimizeRequest: Models.OptimizeRequestModel,
 };
 
 export default database;
