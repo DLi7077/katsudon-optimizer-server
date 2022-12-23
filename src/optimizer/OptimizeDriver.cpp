@@ -7,6 +7,7 @@ int main(int argc, char** argv) {
     cout << "{ Usage: " << argv[0] << " json input ";
     return 0;
   }
+
   Json::JsonObject input(std::move(argv[1]));
   Json::JsonObject characterJson = input["character"];
   Json::JsonObject enemyJson = input["enemy"];

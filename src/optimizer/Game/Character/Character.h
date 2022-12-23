@@ -64,7 +64,6 @@ class Character {
     final_stats_["elemental_mastery"] = stats_[ELEMENTAL_MASTERY];
     final_stats_["energy_recharge"] = stats_[ENERGY_RECHARGE];
     final_stats_["crit_rate"] = stats_[CRIT_RATE];
-    final_stats_[MELT_BONUS] = stats_[MELT_BONUS];
     final_stats_["crit_damage"] = stats_[CRIT_DAMAGE];
     final_stats_["damage_bonus_anemo"] = damage_bonus_[ANEMO];
     final_stats_["damage_bonus_cryo"] = damage_bonus_[CRYO];
@@ -74,6 +73,7 @@ class Character {
     final_stats_["damage_bonus_pyro"] = damage_bonus_[PYRO];
     final_stats_["damage_bonus_physical"] = damage_bonus_[PHYSICAL];
     final_stats_["damage_bonus_all"] = damage_bonus_[ALL];
+    final_stats_[MELT_BONUS] = stats_[MELT_BONUS];
   }
 
   bool validFinalStat(std::string statLabel) {
