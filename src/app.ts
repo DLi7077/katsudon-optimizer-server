@@ -15,4 +15,4 @@ app.listen(port, async () => {
   console.log(`Test apis with http://localhost:${port}/api`);
 });
 
-// generateRoutes(app);
+generateRoutes(app);
