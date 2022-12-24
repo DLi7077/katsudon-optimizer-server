@@ -1,6 +1,5 @@
 import _ from "lodash";
 import { Request, Response } from "express";
-import { runOptimizer } from "../../utils";
 import {
   BonusStatGain,
   CharacterStats,
@@ -17,7 +16,6 @@ import {
 } from "../../constants/optimize";
 import OptimizeService from "../../services/Optimize";
 import { ObjectId } from "mongoose";
-import { OptimizeResultAttributes } from "../../database/models/OptimizeResult";
 
 export async function createRequest(
   req: Request,
@@ -69,9 +67,9 @@ export async function getRequest(req: Request, res: Response): Promise<void> {
 }
 
 export async function getResult(req: Request, res: Response): Promise<void> {
-  const requestId: any | ObjectId = _.get(req.query, "id");
-  await OptimizeService.findResultById(requestId).then((request) => {
+  const resultId: any | ObjectId = _.get(req.query, "id");
+  await OptimizeService.findResultById(resultId).then((result) => {
     res.status(200);
-    res.json(request);
+    res.json(result);
   });
 }
