@@ -3,6 +3,7 @@ import generateRoutes from "./routes";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import jobs from "./jobs";
 
 const app = express();
 app.use(cors({ origin: "*" }));
@@ -16,3 +17,5 @@ app.listen(port, async () => {
 });
 
 generateRoutes(app);
+
+jobs.schedule();

@@ -1,12 +1,14 @@
 import _ from "lodash";
 import Models from "../database";
-import { OptimizeRequestAttributes } from "../database/models/OptimizeRequest";
+import OptimizeRequestModel, {
+  OptimizeRequestAttributes,
+} from "../database/models/OptimizeRequest";
 import {
   CharacterAttributes,
   CharacterEnemyRequest,
   EnemyAttributes,
 } from "interface";
-import { ObjectId } from "mongoose";
+import { ObjectId, SortOrder } from "mongoose";
 import { runOptimizer } from "../utils";
 import { OptimizeResultAttributes } from "../database/models/OptimizeResult";
 import { STATUS } from "../constants/ProcessingStatus";
@@ -44,16 +46,30 @@ async function findRequestById(
   return Models.OptimizeRequest.findById(requestId);
 }
 
+async function getPendingRequests(
+  limit: number = 20
+): Promise<OptimizeRequestAttributes[]> {
+  const ASCENDING: SortOrder = 1;
+  const pendingRequests: OptimizeRequestAttributes[] =
+    await Models.OptimizeRequest.find({
+      status: STATUS.PENDING,
+    })
+      .sort({ created_at: ASCENDING })
+      .limit(limit);
+
+  return pendingRequests;
+}
+
 async function findResultById(
-  requestId: ObjectId
+  resultId: ObjectId
 ): Promise<OptimizeResultAttributes | any> {
-  const exists: boolean = await requestExists(requestId);
+  const exists = await Models.OptimizeResult.exists({ _id: resultId });
   if (!exists) {
     const error = new NotFoundResponse("No Object Id found");
     return error;
   }
 
-  return Models.OptimizeResult.findById(requestId);
+  return Models.OptimizeResult.findById(resultId);
 }
 
 async function setRequestProcessing(
@@ -126,4 +142,5 @@ export default {
   generateResult,
   setRequestProcessing,
   setRequestComplete,
+  getPendingRequests,
 };
