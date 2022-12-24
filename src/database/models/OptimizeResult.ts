@@ -6,7 +6,7 @@ export interface OptimizeResultAttributes {
   character: OptimizedCharacterResult;
   analysis: Analysis;
   created_at: Date;
-  request_id: ObjectId;
+  request: ObjectId;
 }
 
 export type OptimizeResultModelDefinition =
@@ -31,9 +31,10 @@ export const OptimizeResultSchema: Schema<OptimizeResultAttributes> =
       type: Date,
       required: true,
     },
-    request_id: {
+    request: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "Optimize Requests",
     },
   });
 

@@ -57,7 +57,11 @@ async function findRequestById(
     return error;
   }
 
-  return Models.OptimizeRequest.findById(requestId);
+  const foundRequest = await Models.OptimizeRequest.findById(
+    requestId
+  ).populate("result");
+
+  return foundRequest;
 }
 
 /**
@@ -126,7 +130,7 @@ async function setRequestComplete(
     {
       status: STATUS.COMPLETE,
       completed_at: new Date(),
-      result_id: resultId,
+      result: resultId,
     },
     { upsert: true, new: true }
   );
