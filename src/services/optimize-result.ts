@@ -47,6 +47,7 @@ async function generateResult(
     await Models.OptimizeResult.create({
       ...computedResult,
       request_id: requestId,
+      created_at: new Date(),
     });
 
   await RequestService.setRequestComplete(

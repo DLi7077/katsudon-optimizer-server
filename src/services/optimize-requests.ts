@@ -24,7 +24,10 @@ async function createRequest(
     enemy: _.get(request, "enemy") as EnemyAttributes,
   } as OptimizeRequestAttributes;
 
-  return Models.OptimizeRequest.create(optimizeRequest);
+  return Models.OptimizeRequest.create({
+    ...optimizeRequest,
+    created_at: new Date(),
+  });
 }
 
 /**

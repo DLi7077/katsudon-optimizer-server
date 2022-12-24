@@ -40,7 +40,6 @@ export const OptimizeRequestSchema: Schema<OptimizeRequestAttributes> =
     created_at: {
       type: Date,
       required: true,
-      default: new Date(),
     },
     processed_at: {
       type: Date,

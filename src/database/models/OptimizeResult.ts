@@ -30,7 +30,6 @@ export const OptimizeResultSchema: Schema<OptimizeResultAttributes> =
     created_at: {
       type: Date,
       required: true,
-      default: new Date(),
     },
     request_id: {
       type: mongoose.Schema.Types.ObjectId,
