@@ -12,6 +12,7 @@
 #define CRYO_DAMAGE_BONUS "Cryo DMG Bonus%"
 #define DENDRO_DAMAGE_BONUS "Dendro DMG Bonus%"
 #define ELECTRO_DAMAGE_BONUS "Electro DMG Bonus%"
+#define GEO_DAMAGE_BONUS "Geo DMG Bonus%"
 #define HYDRO_DAMAGE_BONUS "Hydro DMG Bonus%"
 #define PYRO_DAMAGE_BONUS "Pyro DMG Bonus%"
 #define PHYSICAL_DAMAGE_BONUS "Physical DMG Bonus%"
@@ -81,6 +82,7 @@
 #define CRYO "Cryo"
 #define DENDRO "Dendro"
 #define ELECTRO "Electro"
+#define GEO "Geo"
 #define HYDRO "Hydro"
 #define PYRO "Pyro"
 #define PHYSICAL "Physical"
@@ -131,6 +133,7 @@ std::unordered_map<std::string, double> main_stat_max_roll_mapping_ = {
     {CRYO_DAMAGE_BONUS, MAX_ELEMENTAL_DAMAGE_BONUS_MAIN},
     {DENDRO_DAMAGE_BONUS, MAX_ELEMENTAL_DAMAGE_BONUS_MAIN},
     {ELECTRO_DAMAGE_BONUS, MAX_ELEMENTAL_DAMAGE_BONUS_MAIN},
+    {GEO_DAMAGE_BONUS, MAX_ELEMENTAL_DAMAGE_BONUS_MAIN},
     {HYDRO_DAMAGE_BONUS, MAX_ELEMENTAL_DAMAGE_BONUS_MAIN},
     {PYRO_DAMAGE_BONUS, MAX_ELEMENTAL_DAMAGE_BONUS_MAIN},
     {PHYSICAL_DAMAGE_BONUS, MAX_PHYSICAL_DAMAGE_BONUS_MAIN},
@@ -150,6 +153,7 @@ std::vector<std::string> valid_elements_ = {
     CRYO,
     DENDRO,
     ELECTRO,
+    GEO,
     HYDRO,
     PYRO,
     PHYSICAL,
