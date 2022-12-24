@@ -1,7 +1,8 @@
 import cron from "node-cron";
 import async, { AsyncFunction, AsyncResultCallback } from "async";
 import _ from "lodash";
-import OptimizeService from "../services/Optimize";
+import OptimizeService from "../services/optimize-result";
+import RequestService from "../services/optimize-requests";
 import { OptimizeRequestAttributes } from "../database/models/OptimizeRequest";
 import { ObjectId } from "mongoose";
 
@@ -29,11 +30,11 @@ function schedule() {
   const secondInterval = 5;
   const everyThreeSeconds = `*/${secondInterval} * * * * *`;
   cron.schedule(everyThreeSeconds, () => {
-    // console.log(`running ${processCount} processes at`, new Date());
+    console.log(`running ${processCount} processes at`, new Date());
     if (processCount == PROCESS_LIMIT) return;
 
     const remainingBandwidth = PROCESS_LIMIT - processCount;
-    OptimizeService.getPendingRequests(remainingBandwidth).then(
+    RequestService.getPendingRequests(remainingBandwidth).then(
       (requests: OptimizeRequestAttributes[]) => {
         processCount += requests.length;
         const requestIds = _.map(

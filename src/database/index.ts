@@ -6,7 +6,6 @@ const database: Database = {
   mongoose,
   OptimizeRequest: Models.OptimizeRequestModel,
   OptimizeResult: Models.OptimizeResultModel,
-  OptimizeProcess: Models.OptimizeProcessModel,
 };
 
 export default database;

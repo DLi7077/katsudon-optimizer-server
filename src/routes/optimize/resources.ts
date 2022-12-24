@@ -14,7 +14,8 @@ import {
   DEFAULT_STAT_PREF,
   DEFAULT_ENEMY_STATS,
 } from "../../constants/optimize";
-import OptimizeService from "../../services/Optimize";
+import OptimizeService from "../../services/optimize-result";
+import RequestService from "../../services/optimize-requests";
 import { ObjectId } from "mongoose";
 
 export async function createRequest(
@@ -52,7 +53,7 @@ export async function createRequest(
     enemy: enemyStats as EnemyAttributes,
   };
 
-  await OptimizeService.createRequest(optimizeRequest).then((created) => {
+  await RequestService.createRequest(optimizeRequest).then((created) => {
     res.status(200);
     res.json(created);
   });
@@ -60,7 +61,7 @@ export async function createRequest(
 
 export async function getRequest(req: Request, res: Response): Promise<void> {
   const requestId: any | ObjectId = _.get(req.query, "id");
-  await OptimizeService.findRequestById(requestId).then((request) => {
+  await RequestService.findRequestById(requestId).then((request) => {
     res.status(200);
     res.json(request);
   });
