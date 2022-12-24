@@ -16,18 +16,21 @@ import {
   DEFAULT_ENEMY_STATS,
 } from "../../constants/optimize";
 import OptimizeService from "../../services/Optimize";
+import { ObjectId } from "mongoose";
+import { OptimizeResultAttributes } from "../../database/models/OptimizeResult";
 
-export async function optimize(req: Request, res: Response) {
+export async function createRequest(
+  req: Request,
+  res: Response
+): Promise<void> {
   const characterStats: CharacterStats = {
     ...DEFAULT_CHARACTER_STATS,
     ..._.get(req.body, "character.stats"),
   };
-
   const characterTalents: TalentScaling[] = _.get(
     req.body,
     "character.talent_scalings"
   );
-
   const bonusStatGains: BonusStatGain[] = _.get(
     req.body,
     "character.bonus_stat_gain"
@@ -51,16 +54,24 @@ export async function optimize(req: Request, res: Response) {
     enemy: enemyStats as EnemyAttributes,
   };
 
-  // await OptimizeService.create(optimizeRequest).then((created) => {
-  //   res.status(200);
-  //   res.json(created);
-  // });
+  await OptimizeService.createRequest(optimizeRequest).then((created) => {
+    res.status(200);
+    res.json(created);
+  });
+}
 
-  console.log(optimizeRequest);
-  const result = await runOptimizer(JSON.stringify(optimizeRequest));
+export async function getRequest(req: Request, res: Response): Promise<void> {
+  const requestId: any | ObjectId = _.get(req.query, "id");
+  await OptimizeService.findRequestById(requestId).then((request) => {
+    res.status(200);
+    res.json(request);
+  });
+}
 
-  console.log(result);
-
-  res.status(200);
-  res.json(result);
+export async function getResult(req: Request, res: Response): Promise<void> {
+  const requestId: any | ObjectId = _.get(req.query, "id");
+  await OptimizeService.findResultById(requestId).then((request) => {
+    res.status(200);
+    res.json(request);
+  });
 }

@@ -10,6 +10,7 @@ export interface OptimizeRequestAttributes {
   created_at: Date;
   processed_at?: Date;
   completed_at?: Date;
+  result_id?: ObjectId;
 }
 
 export type OptimizeRequestModelDefinition =
@@ -47,6 +48,10 @@ export const OptimizeRequestSchema: Schema<OptimizeRequestAttributes> =
     },
     completed_at: {
       type: Date,
+      required: false,
+    },
+    result_id: {
+      type: mongoose.Schema.Types.ObjectId,
       required: false,
     },
   });

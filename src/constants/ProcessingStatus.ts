@@ -1,7 +1,7 @@
 export enum STATUS {
   PENDING = "pending",
-  IN_PROGRESS = "in progress",
+  PROCESSING = "processing",
   COMPLETE = "complete",
 }
 
-export type Status = STATUS.PENDING | STATUS.IN_PROGRESS | STATUS.COMPLETE;
+export type Status = STATUS.PENDING | STATUS.PROCESSING | STATUS.COMPLETE;
