@@ -46,7 +46,7 @@ async function generateResult(
   const generatedResult: OptimizeResultAttributes =
     await Models.OptimizeResult.create({
       ...computedResult,
-      request_id: requestId,
+      request: requestId,
       created_at: new Date(),
     });
 
