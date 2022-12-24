@@ -1,8 +1,6 @@
 import _ from "lodash";
 import Models from "../database";
-import OptimizeRequestModel, {
-  OptimizeRequestAttributes,
-} from "../database/models/OptimizeRequest";
+import { OptimizeRequestAttributes } from "../database/models/OptimizeRequest";
 import {
   CharacterAttributes,
   CharacterEnemyRequest,
@@ -15,6 +13,11 @@ import { STATUS } from "../constants/ProcessingStatus";
 
 import { NotFoundResponse } from "http-errors-response-ts/lib";
 
+/**
+ * @description creates a request
+ * @param {OptimizeRequestAttributes} request - the request to create
+ * @returns {Promise<OptimizeRequestAttributes>} Promise of created request
+ */
 async function createRequest(
   request: CharacterEnemyRequest
 ): Promise<OptimizeRequestAttributes> {
@@ -26,6 +29,11 @@ async function createRequest(
   return Models.OptimizeRequest.create(optimizeRequest);
 }
 
+/**
+ * @description checks if requestId exists
+ * @param {ObjectId} requestId - the request_id to check for
+ * @returns {Promise<boolean>} Promise of id existing
+ */
 async function requestExists(requestId: ObjectId): Promise<boolean> {
   const foundRequest: any = await Models.OptimizeRequest.exists({
     _id: requestId,
@@ -34,6 +42,11 @@ async function requestExists(requestId: ObjectId): Promise<boolean> {
   return !!foundRequest;
 }
 
+/**
+ * @description returns a request document
+ * @param {ObjectId} requestId - the request_id to check for
+ * @returns {Promise<OptimizeRequestAttributes>} Promise of the fetched request
+ */
 async function findRequestById(
   requestId: ObjectId
 ): Promise<OptimizeRequestAttributes | any> {
@@ -46,6 +59,11 @@ async function findRequestById(
   return Models.OptimizeRequest.findById(requestId);
 }
 
+/**
+ * @description returns a list of pending requests
+ * @param {number} limit - the max amount of requests to query for, defaults to 20
+ * @returns {Promise<OptimizeRequestAttributes[]>} Promise of a list of pending requests
+ */
 async function getPendingRequests(
   limit: number = 20
 ): Promise<OptimizeRequestAttributes[]> {
@@ -60,18 +78,12 @@ async function getPendingRequests(
   return pendingRequests;
 }
 
-async function findResultById(
-  resultId: ObjectId
-): Promise<OptimizeResultAttributes | any> {
-  const exists = await Models.OptimizeResult.exists({ _id: resultId });
-  if (!exists) {
-    const error = new NotFoundResponse("No Object Id found");
-    return error;
-  }
-
-  return Models.OptimizeResult.findById(resultId);
-}
-
+/**
+ * @description Sets a request's computation status to complete
+ * deletes the request from the process table
+ * @param {ObjectId} requestId - id of the completed request
+ * @returns {Promise<OptimizeResultAttributes>} Promise of the updated request
+ */
 async function setRequestProcessing(
   requestId: ObjectId
 ): Promise<OptimizeRequestAttributes | any> {
@@ -91,6 +103,13 @@ async function setRequestProcessing(
   );
 }
 
+/**
+ * @description Sets a request's computation status to complete
+ * deletes the request from the process table
+ * @param {ObjectId} requestId - id of the completed request
+ * @param {ObjectId} resultId - id of the completed result
+ * @returns {Promise<OptimizeResultAttributes>} Promise of the updated request
+ */
 async function setRequestComplete(
   requestId: ObjectId,
   resultId: ObjectId
@@ -112,6 +131,29 @@ async function setRequestComplete(
   );
 }
 
+/**
+ * @description returns a request document
+ * @param {ObjectId} resultId - the result_id to check for
+ * @returns {Promise<OptimizeResultAttributes>} Promise of the fetched result
+ */
+async function findResultById(
+  resultId: ObjectId
+): Promise<OptimizeResultAttributes | any> {
+  const exists = await Models.OptimizeResult.exists({ _id: resultId });
+  if (!exists) {
+    const error = new NotFoundResponse("No Object Id found");
+    return error;
+  }
+
+  return Models.OptimizeResult.findById(resultId);
+}
+
+/**
+ * @description runs the optimizer algorithm script on the request
+ * creates a result document after successful computation
+ * @param {ObjectId} requestId - the request_id document to compute
+ * @returns {Promise<OptimizeResultAttributes>} Promise of a created result document
+ */
 async function generateResult(
   requestId: ObjectId
 ): Promise<OptimizeResultAttributes> {
