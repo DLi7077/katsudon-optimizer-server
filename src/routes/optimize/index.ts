@@ -1,8 +1,9 @@
 import express, { Router } from "express";
-import { optimize } from "./resources";
+import { createRequest, getRequest } from "./resources";
 
 const router: Router = express.Router();
 
-router.post("/", optimize);
+router.post("/", createRequest);
+router.get("/", getRequest);
 
 export default router;

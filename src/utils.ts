@@ -1,16 +1,21 @@
 import { exec, spawn } from "child_process";
 import * as dotenv from "dotenv";
 dotenv.config();
+import { OptimizeResultAttributes } from "./database/models/OptimizeResult";
+import { CharacterEnemyRequest } from "interface";
 
-export async function runOptimizer(jsonString: string): Promise<string> {
+export async function runOptimizer(
+  optimizeRequest: CharacterEnemyRequest
+): Promise<OptimizeResultAttributes> {
   const run = `./src/optimizer/driver.${process.env.FILE_TYPE ?? "out"}`;
-  const result: string = await ExecuteScript(`${run}`, [jsonString])
-    .then((res: any) => {
-      if (!isJsonString(res)) return { error: res };
+  const optimizeRequestString: string = JSON.stringify(optimizeRequest);
 
-      return JSON.parse(res);
-    })
-    .catch((err) => `{error: ${err}}`);
+  const result: OptimizeResultAttributes | any = await ExecuteScript(`${run}`, [
+    optimizeRequestString,
+  ]).then((res: any) => {
+    if (!isJsonString(res)) return { error: res };
+    return JSON.parse(res);
+  });
 
   return result;
 }
