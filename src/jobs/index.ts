@@ -27,7 +27,7 @@ function createGenerateResultTasks(
 
 // https://github.com/node-cron/node-cron
 function schedule() {
-  const secondInterval = 5;
+  const secondInterval = 10;
   const everyThreeSeconds = `*/${secondInterval} * * * * *`;
   cron.schedule(everyThreeSeconds, () => {
     console.log(`running ${processCount} processes at`, new Date());
