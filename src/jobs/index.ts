@@ -6,7 +6,7 @@ import RequestService from "../services/optimize-requests";
 import { OptimizeRequestAttributes } from "../database/models/OptimizeRequest";
 import { ObjectId } from "mongoose";
 
-const PROCESS_LIMIT = 20;
+const PROCESS_LIMIT = 10;
 let processCount = 0;
 
 function createGenerateResultTasks(
@@ -20,14 +20,18 @@ function createGenerateResultTasks(
           .then(() => {
             processCount -= 1;
           })
-          .catch(next);
+          .catch(async (err) => {
+            console.log(err);
+            await RequestService.setRequestError(requestId);
+            next();
+          });
       }
   );
 }
 
 // https://github.com/node-cron/node-cron
 function schedule() {
-  const secondInterval = 10;
+  const secondInterval = 5;
   const everyThreeSeconds = `*/${secondInterval} * * * * *`;
   cron.schedule(everyThreeSeconds, () => {
     if (processCount == PROCESS_LIMIT) return;

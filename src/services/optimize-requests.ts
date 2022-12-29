@@ -89,6 +89,31 @@ async function getPendingRequests(
  * @param {ObjectId} requestId - id of the completed request
  * @returns {Promise<OptimizeResultAttributes>} Promise of the updated request
  */
+async function setRequestError(
+  requestId: ObjectId
+): Promise<OptimizeRequestAttributes | any> {
+  const exists: boolean = await requestExists(requestId);
+  if (!exists) {
+    const error = new NotFoundResponse("No Object Id found");
+    return error;
+  }
+
+  return await Models.OptimizeRequest.findOneAndUpdate(
+    { _id: requestId },
+    {
+      status: STATUS.ERROR,
+      processed_at: new Date(),
+    },
+    { upsert: true, new: true }
+  );
+}
+
+/**
+ * @description Sets a request's computation status to complete
+ * deletes the request from the process table
+ * @param {ObjectId} requestId - id of the completed request
+ * @returns {Promise<OptimizeResultAttributes>} Promise of the updated request
+ */
 async function setRequestProcessing(
   requestId: ObjectId
 ): Promise<OptimizeRequestAttributes | any> {
@@ -141,5 +166,6 @@ export default {
   findRequestById,
   setRequestProcessing,
   setRequestComplete,
+  setRequestError,
   getPendingRequests,
 };
