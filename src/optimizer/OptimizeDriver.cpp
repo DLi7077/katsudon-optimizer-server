@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
   Initial::StatPreference preference = Parser::CreateStatPreferences(preferenceJson);
   std::vector<std::vector<Artifact>> artifactPool = Initial::generateArtifactPool(preference);
 
-  Character best = Optimize::optimize(character, enemy, artifactPool, 50);
+  Character best = Optimize::optimize(character, enemy, artifactPool, 10);
   Json::JsonObject result = Calculator::toJson(best, enemy);
   LOG(result);
 

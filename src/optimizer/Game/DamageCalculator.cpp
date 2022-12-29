@@ -26,9 +26,10 @@ double baseDamage(Character& character) {
 double bonusMultipliers(Character& character) {
   double dmg_bonus = character.getDMGBonus(character.getDamageElement());
   double dmg_bonus_all = character.getDMGBonus(ALL);
+  double dmg_bonus_talent = character.getDMGBonus(TALENT);
   double crit_dmg = character.getStat("crit_damage");
 
-  return (1 + dmg_bonus + dmg_bonus_all) * (1 + crit_dmg);
+  return (1 + dmg_bonus + dmg_bonus_all + dmg_bonus_talent) * (1 + crit_dmg);
 }
 
 // TODO: add crimson witch buffs
