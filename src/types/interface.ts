@@ -9,15 +9,16 @@ export interface CharacterStats {
   base_def: number;
   flat_attack: number;
   attack_percent: number;
-  flat_hp: number;
   hp_percent: number;
-  flat_def: number;
   def_percent: number;
+  flat_hp: number;
+  flat_def: number;
   elemental_mastery: number;
   energy_recharge: number;
   crit_rate: number;
   crit_damage: number;
   damage_bonus_elemental: number;
+  damage_bonus_talent: number;
   damage_bonus_all: number;
   melt_bonus: number;
   base_damage_bonus: number;
@@ -102,6 +103,7 @@ export interface OptimizedFinalStats {
   damage_bonus_physical: number;
   damage_bonus_pyro: number;
   damage_bonus_all: number;
+  damage_bonus_talent: number;
 }
 
 export interface StatRoll {

@@ -30,6 +30,7 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   double crit_rate = stats["crit_rate"].double_value();
   double crit_damage = stats["crit_damage"].double_value();
   double damage_bonus_elemental = stats["damage_bonus_elemental"].double_value();
+  double damage_bonus_talent = stats["damage_bonus_talent"].double_value();
   double damage_bonus_all = stats["damage_bonus_all"].double_value();
   double melt_bonus = stats["melt_bonus"].double_value();
   double base_damage_bonus = stats["base_damage_bonus"].double_value();
@@ -59,6 +60,7 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
 
   character.setDamageBonus(characterElement, damage_bonus_elemental);
   character.setDamageBonus(ALL, damage_bonus_all);  // other dmg bonus
+  character.setDamageBonus(TALENT, damage_bonus_talent);  // talent dmg bonus
   character.setStat("base_damage_bonus", base_damage_bonus);
   character.setStat("defense_shred", defense_shred);
   character.setStat("quicken_bonus", quicken_bonus);

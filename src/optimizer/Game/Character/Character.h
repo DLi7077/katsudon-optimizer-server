@@ -14,9 +14,6 @@
 #define DEFAULT_BASE_DEF 200
 #define DEFAULT_CRIT_DAMAGE .5
 
-using TalentScalingStat = std::unordered_map<std::string, std::string>;
-using TalentDMGPercent = std::unordered_map<std::string, double>;
-
 class Character {
  private:
   int character_level_ = DEFAULT_CHARACTER_LEVEL;
@@ -54,6 +51,7 @@ class Character {
     damage_bonus_[PYRO] = 0;
     damage_bonus_[PHYSICAL] = 0;
     damage_bonus_[ALL] = 0;
+    damage_bonus_[TALENT] = 0;
   }
 
   // update final stats on stat change
@@ -73,6 +71,7 @@ class Character {
     final_stats_["damage_bonus_pyro"] = damage_bonus_[PYRO];
     final_stats_["damage_bonus_physical"] = damage_bonus_[PHYSICAL];
     final_stats_["damage_bonus_all"] = damage_bonus_[ALL];
+    final_stats_["damage_bonus_talent"] = damage_bonus_[TALENT];
     final_stats_[MELT_BONUS] = stats_[MELT_BONUS];
     final_stats_["quicken_bonus"] = stats_["quicken_bonus"];
   }
@@ -94,6 +93,7 @@ class Character {
         "damage_bonus_pyro",
         "damage_bonus_physical",
         "damage_bonus_all",
+        "damage_bonus_talent",
         "base_damage_bonus",
         "defense_shred",
         "quicken_bonus",
@@ -115,6 +115,7 @@ class Character {
     if (label == PYRO_DAMAGE_BONUS) return true;
     if (label == PHYSICAL_DAMAGE_BONUS) return true;
     if (label == OTHER_DAMAGE_BONUS) return true;
+    if (label == TALENT_DAMAGE_BONUS) return true;
 
     return false;
   }
@@ -130,6 +131,7 @@ class Character {
     if (label == PYRO_DAMAGE_BONUS) return PYRO;
     if (label == PHYSICAL_DAMAGE_BONUS) return PHYSICAL;
     if (label == OTHER_DAMAGE_BONUS) return ALL;
+    if (label == TALENT_DAMAGE_BONUS) return TALENT;
 
     return label;
   }
@@ -340,6 +342,7 @@ class Character {
     out << "Pyro DMG Bonus: \t" << rhs.final_stats_["damage_bonus_pyro"] * 100 << "%\n";
     out << "Physical DMG Bonus:\t" << rhs.final_stats_["damage_bonus_physical"] * 100 << "%\n";
     out << "Other DMG Bonus:\t" << rhs.final_stats_["damage_bonus_all"] * 100 << "%\n";
+    out << "Talent DMG Bonus:\t" << rhs.final_stats_["damage_bonus_talent"] * 100 << "%\n";
     out << std::string(30, '-') << "\n";
 
     return out;
@@ -369,6 +372,7 @@ class Character {
     stats["damage_bonus_pyro"] = Json::JsonObject(final_stats_["damage_bonus_pyro"]);
     stats["damage_bonus_physical"] = Json::JsonObject(final_stats_["damage_bonus_physical"]);
     stats["damage_bonus_all"] = Json::JsonObject(final_stats_["damage_bonus_all"]);
+    stats["damage_bonus_talent"] = Json::JsonObject(final_stats_["damage_bonus_talent"]);
 
     stats["base_damage_bonus"] = Json::JsonObject(final_stats_["base_damage_bonus"]);
     stats["defense_shred"] = Json::JsonObject(final_stats_["defense_shred"]);

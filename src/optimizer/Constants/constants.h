@@ -17,6 +17,7 @@
 #define PYRO_DAMAGE_BONUS "Pyro DMG Bonus%"
 #define PHYSICAL_DAMAGE_BONUS "Physical DMG Bonus%"
 #define OTHER_DAMAGE_BONUS "Other DMG Bonus%"
+#define TALENT_DAMAGE_BONUS "Talent DMG Bonus%"
 
 #define BASE_ATK "Base Attack"
 #define BASE_HP "Base HP"
@@ -87,6 +88,7 @@
 #define PYRO "Pyro"
 #define PHYSICAL "Physical"
 #define ALL "All"
+#define TALENT "Talent"
 
 namespace Constants {
 
