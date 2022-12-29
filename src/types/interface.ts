@@ -50,7 +50,7 @@ export interface StatPreference {
     ...BonusStat[]
   ];
   flower_main_stats: [BonusStat]; // only 1
-  feather_main_stats: BonusStat[]; // only 1
+  feather_main_stats: [BonusStat]; // only 1
   sands_main_stats: [BonusStat, ...BonusStat[]]; // at least 1
   goblet_main_stats: [BonusStat, ...BonusStat[]]; // at least 1
   circlet_main_stats: [BonusStat, ...BonusStat[]]; // at least 1
