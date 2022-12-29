@@ -30,13 +30,13 @@ function schedule() {
   const secondInterval = 10;
   const everyThreeSeconds = `*/${secondInterval} * * * * *`;
   cron.schedule(everyThreeSeconds, () => {
-    console.log(`running ${processCount} processes at`, new Date());
     if (processCount == PROCESS_LIMIT) return;
 
     const remainingBandwidth = PROCESS_LIMIT - processCount;
     RequestService.getPendingRequests(remainingBandwidth).then(
       (requests: OptimizeRequestAttributes[]) => {
         processCount += requests.length;
+        console.log(`running ${processCount} processes at`, new Date());
         const requestIds = _.map(
           requests,
           (request: OptimizeRequestAttributes) => _.get(request, "_id")
