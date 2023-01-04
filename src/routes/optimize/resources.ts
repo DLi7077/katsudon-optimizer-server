@@ -13,6 +13,7 @@ import {
   DEFAULT_CHARACTER_STATS,
   DEFAULT_STAT_PREF,
   DEFAULT_ENEMY_STATS,
+  DEFAULT_OPTIMIZE_FILTER,
 } from "../../constants/optimize";
 import OptimizeService from "../../services/optimize-result";
 import RequestService from "../../services/optimize-requests";
@@ -42,6 +43,8 @@ export async function createRequest(
     ...DEFAULT_STAT_PREF,
     ..._.get(req.body, "stat_preferences"),
   };
+  const optimizeFilter: number =
+    _.get(req.body, "optimize_filter") ?? DEFAULT_OPTIMIZE_FILTER;
 
   const optimizeRequest: CharacterEnemyRequest = {
     character: {
@@ -51,6 +54,7 @@ export async function createRequest(
       stat_preferences: statPreferences,
     } as CharacterAttributes,
     enemy: enemyStats as EnemyAttributes,
+    optimize_filter: optimizeFilter,
   };
 
   await RequestService.createRequest(optimizeRequest).then((created) => {

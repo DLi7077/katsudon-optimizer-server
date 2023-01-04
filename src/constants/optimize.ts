@@ -30,14 +30,12 @@ export const DEFAULT_CHARACTER_STATS: CharacterStats = {
   defense_shred: 0,
   quicken_bonus: 0,
 };
-
 export const DEFAULT_TALENT_SCALING: TalentScaling[] = [
   {
     talent_stat: "total_attack" as FinalStat,
     talent_percent: 13.473,
   },
 ];
-
 export const DEFAULT_BONUS_STAT_GAINS: BonusStatGain[] = [
   {
     source_stat: "total_hp" as FinalStat,
@@ -54,14 +52,12 @@ export const DEFAULT_BONUS_STAT_GAINS: BonusStatGain[] = [
     max_gain: 0,
   },
 ];
-
 export const DEFAULT_ENEMY_STATS = {
   enemy_level: 0,
   affected_element: "Cryo" as Element,
   resistance_to_damage_element: 0,
   defense_percent_dropped: 0,
 };
-
 export const DEFAULT_STAT_PREF: StatPreference = {
   substats: [
     // at least 5 stats
@@ -95,6 +91,7 @@ export const DEFAULT_STAT_PREF: StatPreference = {
     "Crit Damage" as BonusStat,
   ],
 };
+export const DEFAULT_OPTIMIZE_FILTER = 30;
 /*
 {
   "character": {

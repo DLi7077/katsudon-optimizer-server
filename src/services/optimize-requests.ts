@@ -22,6 +22,7 @@ async function createRequest(
   const optimizeRequest = {
     character: _.get(request, "character") as CharacterAttributes,
     enemy: _.get(request, "enemy") as EnemyAttributes,
+    optimize_filter: _.get(request, "optimize_filter") as number,
   } as OptimizeRequestAttributes;
 
   return Models.OptimizeRequest.create({
