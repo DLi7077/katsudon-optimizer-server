@@ -6,6 +6,7 @@ export interface OptimizeRequestAttributes {
   _id: ObjectId;
   character: CharacterAttributes;
   enemy: EnemyAttributes;
+  optimize_filter: number;
   status: Status;
   created_at: Date;
   processed_at?: Date;
@@ -29,6 +30,10 @@ export const OptimizeRequestSchema: Schema<OptimizeRequestAttributes> =
     },
     enemy: {
       type: Object,
+      required: true,
+    },
+    optimize_filter: {
+      type: Number,
       required: true,
     },
     status: {

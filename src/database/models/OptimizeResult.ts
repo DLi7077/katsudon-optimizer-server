@@ -4,6 +4,7 @@ import { OptimizedCharacterResult, Analysis } from "interface";
 export interface OptimizeResultAttributes {
   _id: ObjectId;
   character: OptimizedCharacterResult;
+  optimize_filter: number;
   analysis: Analysis;
   created_at: Date;
   request: ObjectId;
@@ -21,6 +22,10 @@ export const OptimizeResultSchema: Schema<OptimizeResultAttributes> =
     },
     character: {
       type: Object,
+      required: true,
+    },
+    optimize_filter: {
+      type: Number,
       required: true,
     },
     analysis: {

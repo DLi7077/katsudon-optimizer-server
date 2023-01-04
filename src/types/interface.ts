@@ -74,6 +74,7 @@ export interface EnemyAttributes {
 export interface CharacterEnemyRequest {
   character: CharacterAttributes;
   enemy: EnemyAttributes;
+  optimize_filter: number;
 }
 
 // result interfaces
