@@ -3,8 +3,8 @@
   "typings": "dist/app",
   "scripts": {
     "watch": "npm run compile-optimizer-windows && npm run compile-optimizer-linux && nodemon src/app.ts",
-    "compile-optimizer-windows": "g++ -std=c++17 -o ./src/optimizer/driver.exe ./src/optimizer/OptimizeDriver.cpp",
-    "compile-optimizer-linux": "g++ -std=c++17 -o ./src/optimizer/driver ./src/optimizer/OptimizeDriver.cpp",
+    "compile-optimizer-windows": "g++ -std=c++17 -o ./src/C++Optimizer/driver.exe ./src/C++Optimizer/OptimizeDriver.cpp",
+    "compile-optimizer-linux": "g++ -std=c++17 -o ./src/C++Optimizer/driver ./src/C++Optimizer/OptimizeDriver.cpp",
     "build-ts": "tsc",
     "build": "npm run build-ts",
     "start": "node dist/app.js",

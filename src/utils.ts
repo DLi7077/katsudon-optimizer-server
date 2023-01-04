@@ -7,7 +7,7 @@ import { CharacterEnemyRequest } from "interface";
 export async function runOptimizer(
   optimizeRequest: CharacterEnemyRequest
 ): Promise<OptimizeResultAttributes> {
-  const run = `./src/optimizer/driver${process.env.FILE_TYPE ?? ""}`;
+  const run = `./src/C++Optimizer/driver${process.env.FILE_TYPE ?? ""}`;
   const optimizeRequestString: string = JSON.stringify(optimizeRequest);
 
   const result: OptimizeResultAttributes | any = await ExecuteScript(`${run}`, [
