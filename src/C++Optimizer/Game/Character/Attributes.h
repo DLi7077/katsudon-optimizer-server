@@ -3,13 +3,14 @@
 
 namespace Attributes {
 struct TalentScaling {
-  std::string source_stat_;  // stat to scale on (total_attack)
-  double stat_scaling_;      // scaling percent (3.29x , or 329%)
+  std::string source_stat_;       // stat to scale on (total_attack)
+  double stat_scaling_;           // scaling percent (3.29x , or 329%)
+  double talent_stat_offset = 0;  // scaling stat offset (offset of 100 from 1000ATK => 900ATK)
   TalentScaling() {}
-  TalentScaling(std::string&& source, double scaling)
-      : source_stat_(std::move(source)), stat_scaling_(scaling) {}
-  TalentScaling(const std::string& source, double scaling)
-      : source_stat_(source), stat_scaling_(scaling) {}
+  TalentScaling(std::string&& source, double scaling, double offset)
+      : source_stat_(std::move(source)), stat_scaling_(scaling), talent_stat_offset(offset) {}
+  TalentScaling(const std::string& source, double scaling, double offset)
+      : source_stat_(source), stat_scaling_(scaling), talent_stat_offset(offset) {}
 };
 
 // support for stats like Hu Tao E and 4pc emblem of severed fate
