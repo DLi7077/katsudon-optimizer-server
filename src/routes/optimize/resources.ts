@@ -31,6 +31,8 @@ export async function createRequest(
     req.body,
     "character.talent_scalings"
   );
+
+  console.log(characterTalents);
   const bonusStatGains: BonusStatGain[] = _.get(
     req.body,
     "character.bonus_stat_gain"

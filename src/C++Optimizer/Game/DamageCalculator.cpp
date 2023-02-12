@@ -16,7 +16,8 @@ namespace Calculator {
 double baseDamage(Character& character) {
   double baseDamage = 0;
   for (const Attributes::TalentScaling& talentScaling : character.getTalentScalings()) {
-    double damageInstance = character.getStat(talentScaling.source_stat_) * talentScaling.stat_scaling_;
+    auto [source_stat_, stat_scaling_, talent_stat_offset] = talentScaling;
+    double damageInstance = (character.getStat(source_stat_) - talent_stat_offset) * stat_scaling_;
     baseDamage += damageInstance;
   }
 

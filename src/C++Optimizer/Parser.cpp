@@ -59,7 +59,7 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   character.setStat(CRIT_DAMAGE, DEFAULT_CRIT_DAMAGE + crit_damage);
 
   character.setDamageBonus(characterElement, damage_bonus_elemental);
-  character.setDamageBonus(ALL, damage_bonus_all);  // other dmg bonus
+  character.setDamageBonus(ALL, damage_bonus_all);        // other dmg bonus
   character.setDamageBonus(TALENT, damage_bonus_talent);  // talent dmg bonus
   character.setStat("base_damage_bonus", base_damage_bonus);
   character.setStat("defense_shred", defense_shred);
@@ -73,7 +73,8 @@ Character CreateCharacter(Json::JsonObject& characterJson) {
   for (Json::JsonObject& scaling : talentScalings) {
     std::string talent_stat = scaling["talent_stat"].string_value();
     double talent_percent = scaling["talent_percent"].double_value();
-    Attributes::TalentScaling scalingInstance(talent_stat, talent_percent);
+    double talent_stat_offset = scaling["talent_stat_offset"].double_value();
+    Attributes::TalentScaling scalingInstance(talent_stat, talent_percent, talent_stat_offset);
     character.addTalentScaling(scalingInstance);
   }
 

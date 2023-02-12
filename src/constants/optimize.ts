@@ -34,6 +34,7 @@ export const DEFAULT_TALENT_SCALING: TalentScaling[] = [
   {
     talent_stat: "total_attack" as FinalStat,
     talent_percent: 13.473,
+    talent_stat_offset: 0,
   },
 ];
 export const DEFAULT_BONUS_STAT_GAINS: BonusStatGain[] = [

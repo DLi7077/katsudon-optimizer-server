@@ -29,6 +29,7 @@ export interface CharacterStats {
 export interface TalentScaling {
   talent_stat: FinalStat;
   talent_percent: number;
+  talent_stat_offset: number;
 }
 
 export interface BonusStatGain {
